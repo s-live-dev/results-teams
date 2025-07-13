@@ -1,2 +1,2 @@
 # results-teams
-v0Git初回
+team results
