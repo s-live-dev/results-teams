@@ -33,8 +33,8 @@ function getTeamData(s) {
     if (!trapSheet) return { error: `Sheet "トラップ" not found.` };
     if (!skeetSheet) return { error: `Sheet "スキート" not found.` };
     
-    // 大会情報はトラップシートから取得することを基本とする
-    const eventInfo = getEventInfoFromSheet(trapSheet, s);
+    // 大会情報はsパラメータのみで取得
+    const eventInfo = getEventInfoFromSheet(s);
     
     // 各シートから選手データをパース
     const trapPlayers = parsePlayersData(trapSheet, 'trap');
@@ -61,31 +61,86 @@ function getTeamData(s) {
 }
 
 /**
- * シートから大会情報を取得してオブジェクトとして返す
- * @param {Sheet} primarySheet - 大会情報の基準となるシートオブジェクト
+ * オリジナルの getEventInfoData をベースに団体戦用に調整
  * @param {string} s - スプレッドシートID
  * @returns {object} 大会情報オブジェクト
  */
-function getEventInfoFromSheet(primarySheet, s) {
-    const infoData = primarySheet.getRange("AA1:AB6").getValues();
-    const infoMap = new Map(infoData.map(row => [row[0], row[1]]));
+function getEventInfoFromSheet(s) {
+  // オリジナルと同じく「大会情報」シートから取得
+  var sheet = SpreadsheetApp.openById(s).getSheetByName('大会情報');
+  var eData = sheet.getDataRange().getValues().slice(1, 3); // 最大2件のデータを取得
+  
+  // eData から列　主催協会:[0] が空の行を削除
+  eData = eData.filter(function (row) {
+    return row[0] !== ''; // インデックス0の列が空ではない行だけを残す
+  });
 
-    const url = `${ScriptApp.getService().getUrl()}?s=${s}`;
-
+  if (eData.length === 0) {
+    // データがない場合のデフォルト値
     return {
-        name: infoMap.get("大会名") || `団体戦結果`,
-        flagUrl: infoMap.get("旗") || "",
-        place: infoMap.get("場所") || "",
-        date: infoMap.get("開催日") || "",
-        days: infoMap.get("日数") || "",
-        weather: infoMap.get("気象") || "",
-        lastUpdate: "最終更新: " + new Date().toLocaleTimeString('ja-JP'),
-        qrCodeUrl: `https://chart.googleapis.com/chart?cht=qr&chs=150x150&chl=${encodeURIComponent(url)}`,
-        status: {
-            trap: infoMap.get("トラップ状況") || "---",
-            skeet: infoMap.get("スキート状況") || "---"
-        }
+      name: "団体戦結果",
+      flagUrl: "",
+      place: "",
+      date: "",
+      days: "",
+      weather: "",
+      lastUpdate: "最終更新: " + new Date().toLocaleTimeString('ja-JP'),
+      qrCodeUrl: "",
+      status: {
+        trap: "---",
+        skeet: "---"
+      }
     };
+  }
+
+  // 最初の行のデータを使用（オリジナルと同じ構造）
+  var row = eData[0];
+
+  // OpenWeatherMap APIから気象情報を取得（オリジナルと同じ）
+  var weatherData;
+  try {
+    var location = row[7].split(',');
+    var latitude = parseFloat(location[0].trim());
+    var longitude = parseFloat(location[1].trim());
+    var apiKey = PropertiesService.getScriptProperties().getProperty('AK_openWeather');
+    var url = `https://api.openweathermap.org/data/2.5/weather?units=metric&lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+    var response = UrlFetchApp.fetch(url);
+    var json = response.getContentText();
+    weatherData = JSON.parse(json);
+  } catch (error) {
+    weatherData = {
+      weather: [{ description: 'N/A ' }],
+      main: { temp: 'N/A ', humidity: 'N/A ', pressure: 'N/A ' },
+      wind: { speed: 'N/A ' }
+    };
+    console.log('S-LIVE: caught an error,set default values:', error);
+  }
+
+  // 団体戦用のQRコード生成（オリジナルのQR Server APIを使用）
+  var teamResultsUrl = `${ScriptApp.getService().getUrl()}?s=${s}`;
+  var qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + 
+                  encodeURIComponent(teamResultsUrl) + 
+                  '&format=png&margin=10&size=150x150';
+
+  // オリジナルの形式でデータを構築
+  return {
+    name: row[1], // 大会名
+    flagUrl: 'https://s-live.org/wp-content/plugins/s-live/resource/flag/' + encodeURIComponent(row[0]) + '.png',
+    place: row[6], // 場所
+    date: '<i class="fa-regular fa-calendar-days"></i> ' + Utilities.formatDate(new Date(row[5]), "Asia/Tokyo", "yy/MM/dd"),
+    days: row[4] + 'Day(s)',
+    weather: '<i class="fa-solid fa-sun"></i> ' + weatherData.weather[0].description + ' ' +
+             '<i class="fa-solid fa-temperature-three-quarters"></i> ' + weatherData.main.temp + 'c ' +
+             '<i class="fa-solid fa-droplet"></i> ' + weatherData.main.humidity + '% ' +
+             '<i class="fa-solid fa-wind"></i> ' + weatherData.wind.speed + 'm/s ' +
+             '<i class="fa-solid fa-gauge-simple"></i> ' + weatherData.main.pressure + 'hPa',
+    lastUpdate: '<i class="fa-regular fa-clock"></i> ' + Utilities.formatDate(new Date(row[2]), 'Asia/Tokyo', "yy/MM/dd HH:mm"),
+    qrCodeUrl: qrCodeUrl,
+    status: {
+      trap: row[3] || "---", // 状況
+      skeet: row[3] || "---"  // 団体戦では同じ状況を想定
+    }
+  };
 }
 
 /**

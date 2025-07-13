@@ -17,14 +17,26 @@
     <link href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Ramabhadra&display=swap" rel="stylesheet">
 
     <style>
-        /* オリジナルのS-LIVEのスタイルを再現 */
+        /* S-LIVEスタイル */
         body {
             font-family: 'BIZ UDGothic', 'Noto Sans JP', sans-serif;
             background: linear-gradient(270deg, #1e2569, #19115d, #2b1364, #2d0535);
             color: #F3F4F6;
             text-shadow: 0.1vh 0.1vh 0.1vh rgba(0, 0, 0, 0.5);
-            height: 100vh;
             overflow-x: hidden;
+        /* オリジナルのハイスコアカラーリング */
+        .hl23 {
+            color: RGB(101, 255, 255);
+        }
+
+        .hl24 {
+            color: RGB(255, 153, 229);
+            text-decoration: underline solid;
+        }
+
+        .hl25 {
+            color: RGB(255, 255, 101);
+            text-decoration: underline double;
         }
 
         .accordion-content {
@@ -50,6 +62,79 @@
         footer {
             font-family: 'Ramabhadra', sans-serif;
         }
+
+        /* PC版：全画面デジタルサイネージモード */
+        @media (min-width: 1024px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
+            
+            .tab-content {
+                display: block !important;
+            }
+            
+            /* ヘッダー・フッターを非表示 */
+            .mobile-only {
+                display: none !important;
+            }
+            
+            /* 全画面活用 */
+            .fullscreen-container {
+                height: 100vh;
+                padding: 0.5rem;
+                margin: 0;
+                max-width: 100%;
+            }
+            
+            /* PC版でアコーディオンを常時開く */
+            .accordion-content {
+                max-height: none !important;
+                overflow: visible !important;
+            }
+            .accordion-chevron {
+                transform: rotate(180deg);
+            }
+            
+            /* PC版フォントサイズ拡大 */
+            .team-header {
+                font-size: 1.25rem !important;
+            }
+            .team-rank {
+                font-size: 1.5rem !important;
+            }
+            .team-name {
+                font-size: 1.25rem !important;
+            }
+            .team-total {
+                font-size: 1.75rem !important;
+            }
+            .player-name {
+                font-size: 1rem !important;
+            }
+            .player-score {
+                font-size: 1rem !important;
+            }
+            .section-title {
+                font-size: 1.5rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+        }
+
+        /* スマホ版：通常UI */
+        @media (max-width: 1023px) {
+            body {
+                min-height: 100vh;
+            }
+            
+            .fullscreen-container {
+                padding: 0.5rem;
+            }
+            
+            .desktop-only {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body class="flex flex-col">
@@ -59,62 +144,68 @@
         <i class="fa-solid fa-spinner fa-spin text-4xl text-white"></i>
     </div>
 
-    <div class="container mx-auto p-2 md:p-4 flex-grow">
-        
-        <!-- ヘッダー情報 -->
-        <header class="header-gradient bg-black/50 p-3 rounded-lg shadow-lg mb-4 flex items-center justify-center space-x-4">
-            <img id="event-flag" src="" alt="Flag" class="h-10 rounded-full hidden">
-            <h1 id="event-name" class="text-2xl md:text-3xl font-bold text-white text-center" style="text-shadow: 0.4vh 0.4vh 0.4vh rgba(0, 0, 0, 0.5);"></h1>
-        </header>
+    <!-- スマホ版のみ：ヘッダー情報 -->
+    <header class="mobile-only header-gradient bg-black/50 p-2 rounded-lg shadow-lg mb-2 mx-2 mt-2 flex items-center justify-center space-x-4">
+        <img id="event-flag" src="" alt="Flag" class="h-8 rounded-full hidden">
+        <h1 id="event-name" class="text-xl font-bold text-white text-center" style="text-shadow: 0.4vh 0.4vh 0.4vh rgba(0, 0, 0, 0.5);"></h1>
+    </header>
 
-        <!-- タブナビゲーション -->
-        <div class="mb-4 border-b border-white/20">
+    <div class="fullscreen-container flex-grow">
+        
+        <!-- スマホ版のみ：タブナビゲーション -->
+        <div class="mobile-only mb-2 border-b border-white/20">
             <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
-                <button onclick="changeTab('team-event')" class="tab active w-1/3 md:w-auto text-center py-3 px-2 border-b-2 border-transparent font-medium text-sm md:text-base hover:bg-white/10 transition">
-                    競技別団体
+                <button onclick="changeTab('team-trap')" class="tab active w-1/3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover:bg-white/10 transition">
+                    トラップ
                 </button>
-                <button onclick="changeTab('team-overall')" class="tab w-1/3 md:w-auto text-center py-3 px-2 border-b-2 border-transparent font-medium text-sm md:text-base hover:bg-white/10 transition">
-                    総合団体
+                <button onclick="changeTab('team-skeet')" class="tab w-1/3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover:bg-white/10 transition">
+                    スキート
                 </button>
-                <button onclick="changeTab('individual')" class="tab w-1/3 md:w-auto text-center py-3 px-2 border-b-2 border-transparent font-medium text-sm md:text-base hover:bg-white/10 transition">
-                    個人成績
+                <button onclick="changeTab('team-overall')" class="tab w-1/3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover:bg-white/10 transition">
+                    総合
                 </button>
             </nav>
         </div>
 
         <!-- コンテンツエリア -->
-        <main class="pb-24">
-            <div id="team-event" class="tab-content">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                    <div>
-                        <h2 class="text-xl font-bold mb-3" style="color: #eebf35;"><i class="fa-solid fa-bullseye mr-2"></i>トラップ種目 団体</h2>
-                        <div id="team-trap-event" class="space-y-2"></div>
-                    </div>
-                    <div>
-                        <h2 class="text-xl font-bold mb-3" style="color: #b219e3;"><i class="fa-solid fa-compact-disc mr-2"></i>スキート種目 団体</h2>
-                        <div id="team-skeet-event" class="space-y-2"></div>
-                    </div>
+        <main class="pb-2 lg:pb-0 lg:h-full">
+            <!-- スマホ：タブ切り替え / PC：3カラム全画面表示 -->
+            <div class="lg:grid lg:grid-cols-3 lg:gap-2 lg:h-full">
+                
+                <!-- トラップ種目団体セクション -->
+                <div id="team-trap" class="tab-content lg:!block lg:h-full lg:overflow-y-auto">
+                    <h2 class="section-title desktop-only text-lg font-bold mb-1 text-yellow-400">
+                        <i class="fa-solid fa-bullseye mr-2"></i>トラップ種目 団体
+                    </h2>
+                    <div id="team-trap-event" class="space-y-1"></div>
                 </div>
-            </div>
 
-            <div id="team-overall" class="tab-content hidden">
-                <h2 class="text-xl font-bold mb-3 text-green-400"><i class="fa-solid fa-trophy mr-2"></i>総合団体</h2>
-                <div id="team-overall-results" class="space-y-2"></div>
-            </div>
-            
-            <div id="individual" class="tab-content hidden">
-                 <h2 class="text-xl font-bold mb-3 text-gray-300"><i class="fa-solid fa-user mr-2"></i>個人成績</h2>
-                 <p class="text-gray-400 text-center p-8">（ここに既存の個人成績表示を統合します）</p>
+                <!-- スキート種目団体セクション -->
+                <div id="team-skeet" class="tab-content hidden lg:!block lg:h-full lg:overflow-y-auto">
+                    <h2 class="section-title desktop-only text-lg font-bold mb-1 text-purple-400">
+                        <i class="fa-solid fa-compact-disc mr-2"></i>スキート種目 団体
+                    </h2>
+                    <div id="team-skeet-event" class="space-y-1"></div>
+                </div>
+
+                <!-- 総合団体セクション -->
+                <div id="team-overall" class="tab-content hidden lg:!block lg:h-full lg:overflow-y-auto">
+                    <h2 class="section-title desktop-only text-lg font-bold mb-1 text-green-400">
+                        <i class="fa-solid fa-crown mr-2"></i>総合団体
+                    </h2>
+                    <div id="team-overall-results" class="space-y-1"></div>
+                </div>
+                
             </div>
         </main>
     </div>
 
-    <!-- フッター -->
-    <footer class="bg-black/30 p-2 fixed bottom-0 left-0 right-0 text-white/80">
+    <!-- スマホ版のみ：フッター -->
+    <footer class="mobile-only bg-black/30 p-1 fixed bottom-0 left-0 right-0 text-white/80">
         <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
                 <div class="text-left">
-                    <div id="event-place" class="text-lg font-bold"></div>
+                    <div id="event-place" class="text-sm font-bold"></div>
                     <div id="event-datetime" class="text-xs"></div>
                     <div id="event-weather" class="text-xs"></div>
                 </div>
@@ -123,21 +214,28 @@
                     <div id="status-skeet"></div>
                 </div>
             </div>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-2">
                  <div class="text-right text-xs">
                     <div id="event-update-time"></div>
                     <div>Powered by "S-LIVE"</div>
                 </div>
-                <div id="current-time" class="text-2xl font-sans"></div>
-                <img id="sponsor-logo" src="https://s-live.org/wp-content/plugins/s-live/resource/spo/spo_logos_x2bl.png" class="h-8 hidden md:block">
-                <img id="qr-code" src="" class="h-12 w-12 bg-white p-0.5">
+                <div id="current-time" class="text-xl font-sans"></div>
+                <img id="sponsor-logo" src="https://s-live.org/wp-content/plugins/s-live/resource/spo/spo_logos_x2bl.png" class="h-6 hidden md:block">
+                <img id="qr-code" src="" class="h-10 w-10 bg-white p-0.5">
             </div>
         </div>
     </footer>
 
-
     <script>
-        // --- DOM生成関数 ---
+        // スコアカラーリング関数
+        function getScoreClass(score) {
+            switch (score) {
+                case 23: return 'hl23';
+                case 24: return 'hl24';
+                case 25: return 'hl25';
+                default: return '';
+            }
+        }
         function renderTeamEvent(data, targetId, color) {
             const container = document.getElementById(targetId);
             if (!data || data.length === 0) {
@@ -146,40 +244,38 @@
             }
             container.innerHTML = data.map((team) => `
                 <div class="bg-black/30 rounded-lg shadow">
-                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center p-3 text-left font-bold">
+                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center p-2 text-left font-bold">
                         <div class="flex items-center">
-                            <span class="w-8 text-center text-lg">${team.rank}</span>
-                            <span class="flex-1">${team.name}</span>
+                            <span class="team-rank w-8 text-center text-lg">${team.rank}</span>
+                            <span class="team-name flex-1">${team.name}</span>
                         </div>
                         <div class="flex items-center">
-                            <span class="text-xl mr-4" style="color: ${color};">${team.total}</span>
-                            <i class="fa-solid fa-chevron-down transition-transform duration-300"></i>
+                            <span class="team-total text-xl mr-4" style="color: ${color};">${team.total}</span>
+                            <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300"></i>
                         </div>
                     </button>
                     <div class="accordion-content">
-                        <div class="p-3 pt-0 overflow-x-auto">
-                            <table class="w-full text-sm min-w-[300px]">
-                                <thead class="text-white/50">
-                                    <tr>
-                                        <th class="text-left font-normal w-1/6 py-1">順位</th>
-                                        <th class="text-left font-normal w-2/6 py-1">選手名</th>
-                                        <th class="text-right font-normal py-1">R1</th>
-                                        <th class="text-right font-normal py-1">R2</th>
-                                        <th class="text-right font-normal py-1">R3</th>
-                                        <th class="text-right font-normal py-1">R4</th>
-                                        <th class="text-right font-normal py-1 pr-2">合計</th>
-                                    </tr>
-                                </thead>
+                        <div class="px-2 overflow-x-auto">
+                            <table class="w-full text-sm min-w-[300px]" style="table-layout: fixed;">
+                                <colgroup>
+                                    <col style="width: 5%;">   <!-- 順位 -->
+                                    <col style="width: 45%;">  <!-- 選手名 -->
+                                    <col style="width: 9%;">   <!-- R1 -->
+                                    <col style="width: 9%;">   <!-- R2 -->
+                                    <col style="width: 9%;">   <!-- R3 -->
+                                    <col style="width: 9%;">   <!-- R4 -->
+                                    <col style="width: 14%;">  <!-- 合計 -->
+                                </colgroup>
                                 <tbody class="divide-y divide-white/20">
                                     ${team.players.map(p => `
                                         <tr class="text-gray-200">
-                                            <td class="py-1">${p.rank}</td>
-                                            <td class="py-1">${p.name}</td>
-                                            <td class="text-right py-1">${p.r1}</td>
-                                            <td class="text-right py-1">${p.r2}</td>
-                                            <td class="text-right py-1">${p.r3}</td>
-                                            <td class="text-right py-1">${p.r4}</td>
-                                            <td class="text-right py-1 pr-2 font-bold" style="color: ${color};">${p.total}</td>
+                                            <td class="py-0.5 player-score">${p.rank}</td>
+                                            <td class="py-0.5 player-name">${p.name}</td>
+                                            <td class="text-right py-0.5 player-score ${getScoreClass(p.r1)}">${p.r1}</td>
+                                            <td class="text-right py-0.5 player-score ${getScoreClass(p.r2)}">${p.r2}</td>
+                                            <td class="text-right py-0.5 player-score ${getScoreClass(p.r3)}">${p.r3}</td>
+                                            <td class="text-right py-0.5 player-score ${getScoreClass(p.r4)}">${p.r4}</td>
+                                            <td class="text-right py-0.5 pr-2 font-bold player-score" style="color: ${color};">${p.total}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
@@ -198,28 +294,28 @@
             }
             container.innerHTML = data.map(team => `
                 <div class="bg-black/30 rounded-lg shadow">
-                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center p-3 text-left font-bold">
+                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center p-2 text-left font-bold">
                         <div class="flex items-center">
-                            <span class="w-8 text-center text-lg">${team.rank}</span>
-                            <span class="flex-1">${team.name}</span>
+                            <span class="team-rank w-8 text-center text-lg">${team.rank}</span>
+                            <span class="team-name flex-1">${team.name}</span>
                         </div>
                         <div class="flex items-center">
-                            <span class="text-xl text-green-400 mr-4">${team.overallTotal}</span>
-                            <i class="fa-solid fa-chevron-down transition-transform duration-300"></i>
+                            <span class="team-total text-xl text-green-400 mr-4">${team.overallTotal}</span>
+                            <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300"></i>
                         </div>
                     </button>
                     <div class="accordion-content">
-                        <div class="p-3 pt-0 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="px-2 pb-2 grid grid-cols-1 md:grid-cols-2 gap-2">
                             <div>
-                                <h4 class="font-bold mb-1" style="color: #eebf35;">トラップ: ${team.trapTotal}点</h4>
-                                <ul class="text-sm space-y-1">
-                                    ${team.trapPlayers.map(p => `<li class="flex justify-between"><span>${p.rank}. ${p.name}</span><span class="font-semibold" style="color: #eebf35;">${p.total}</span></li>`).join('')}
+                                <h4 class="font-bold mb-1 text-sm" style="color: #eebf35;">トラップ: ${team.trapTotal}点</h4>
+                                <ul class="text-xs space-y-0.5">
+                                    ${team.trapPlayers.map(p => `<li class="flex justify-between player-name"><span>${p.rank}. ${p.name}</span><span class="font-semibold player-score" style="color: #eebf35;">${p.total}</span></li>`).join('')}
                                 </ul>
                             </div>
                             <div>
-                                <h4 class="font-bold mb-1" style="color: #b219e3;">スキート: ${team.skeetTotal}点</h4>
-                                <ul class="text-sm space-y-1">
-                                    ${team.skeetPlayers.map(p => `<li class="flex justify-between"><span>${p.rank}. ${p.name}</span><span class="font-semibold" style="color: #b219e3;">${p.total}</span></li>`).join('')}
+                                <h4 class="font-bold mb-1 text-sm" style="color: #b219e3;">スキート: ${team.skeetTotal}点</h4>
+                                <ul class="text-xs space-y-0.5">
+                                    ${team.skeetPlayers.map(p => `<li class="flex justify-between player-name"><span>${p.rank}. ${p.name}</span><span class="font-semibold player-score" style="color: #b219e3;">${p.total}</span></li>`).join('')}
                                 </ul>
                             </div>
                         </div>
@@ -230,23 +326,48 @@
         
         function renderHeaderAndFooter(info) {
             if (!info) return;
-            document.getElementById('event-name').textContent = info.name;
+            
+            // スマホ版のみ更新
+            const eventName = document.getElementById('event-name');
+            if (eventName) eventName.textContent = info.name;
+            
             if (info.flagUrl) {
                 const flagImg = document.getElementById('event-flag');
-                flagImg.src = info.flagUrl;
-                flagImg.classList.remove('hidden');
+                if (flagImg) {
+                    flagImg.src = info.flagUrl;
+                    flagImg.classList.remove('hidden');
+                }
             }
-            document.getElementById('event-place').textContent = info.place;
-            document.getElementById('event-datetime').textContent = `${info.date} ${info.days}`;
-            document.getElementById('event-weather').innerHTML = info.weather;
-            document.getElementById('event-update-time').textContent = info.lastUpdate;
-            document.getElementById('status-trap').textContent = `TRAP: ${info.status.trap}`;
-            document.getElementById('status-skeet').textContent = `SKEET: ${info.status.skeet}`;
-            document.getElementById('qr-code').src = info.qrCodeUrl;
+            
+            const eventPlace = document.getElementById('event-place');
+            if (eventPlace) eventPlace.textContent = info.place;
+            
+            // HTMLタグを含む部分は innerHTML を使用
+            const eventDatetime = document.getElementById('event-datetime');
+            if (eventDatetime) eventDatetime.innerHTML = `${info.date} ${info.days}`;
+            
+            const eventWeather = document.getElementById('event-weather');
+            if (eventWeather) eventWeather.innerHTML = info.weather;
+            
+            const eventUpdateTime = document.getElementById('event-update-time');
+            if (eventUpdateTime) eventUpdateTime.innerHTML = info.lastUpdate;
+            
+            const statusTrap = document.getElementById('status-trap');
+            if (statusTrap) statusTrap.textContent = `TRAP: ${info.status.trap}`;
+            
+            const statusSkeet = document.getElementById('status-skeet');
+            if (statusSkeet) statusSkeet.textContent = `SKEET: ${info.status.skeet}`;
+            
+            const qrCode = document.getElementById('qr-code');
+            if (qrCode) qrCode.src = info.qrCodeUrl;
         }
 
         // --- イベントハンドラ ---
         function changeTab(tabName) {
+            // PC表示では何もしない（3カラム常時表示）
+            if (window.innerWidth >= 1024) return;
+            
+            // スマホ表示のみタブ切り替え
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(tabName).classList.remove('hidden');
@@ -254,6 +375,9 @@
         }
 
         function toggleAccordion(buttonElement) {
+            // PC表示では何もしない（常に開いた状態）
+            if (window.innerWidth >= 1024) return;
+            
             const content = buttonElement.nextElementSibling;
             const icon = buttonElement.querySelector('i');
             if (content.style.maxHeight) {
@@ -266,9 +390,46 @@
         }
         
         function updateClock() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-            document.getElementById('current-time').textContent = timeString;
+            const currentTime = document.getElementById('current-time');
+            if (currentTime) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+                currentTime.textContent = timeString;
+            }
+        }
+
+        // ウィンドウリサイズ時の表示調整
+        function handleResize() {
+            if (window.innerWidth >= 1024) {
+                // PC表示：3カラム全表示
+                document.getElementById('team-trap').classList.remove('hidden');
+                document.getElementById('team-skeet').classList.remove('hidden');
+                document.getElementById('team-overall').classList.remove('hidden');
+                
+                // アコーディオンを全て開く
+                document.querySelectorAll('.accordion-content').forEach(content => {
+                    content.style.maxHeight = 'none';
+                });
+                document.querySelectorAll('.accordion-chevron').forEach(icon => {
+                    icon.classList.add('rotate-180');
+                });
+            } else {
+                // スマホ表示：アクティブなタブのみ表示
+                const activeTab = document.querySelector('.tab.active');
+                if (activeTab) {
+                    const tabName = activeTab.getAttribute('onclick').match(/'([^']+)'/)[1];
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                    document.getElementById(tabName).classList.remove('hidden');
+                }
+                
+                // アコーディオンを初期状態に戻す
+                document.querySelectorAll('.accordion-content').forEach(content => {
+                    content.style.maxHeight = null;
+                });
+                document.querySelectorAll('.accordion-chevron').forEach(icon => {
+                    icon.classList.remove('rotate-180');
+                });
+            }
         }
 
         // --- データ取得と画面描画 ---
@@ -276,12 +437,10 @@
             const loadingOverlay = document.getElementById('loading-overlay');
             loadingOverlay.classList.remove('hidden');
 
-            // GASから渡されたパラメータを受け取る
             const spreadsheetId = '<?!= s ?>';
 
             google.script.run
                 .withSuccessHandler(data => {
-                    // GAS側でエラーがあった場合の処理
                     if (data.error) {
                         console.error("Error from GAS: ", data.error);
                         loadingOverlay.innerHTML = `<p class="text-red-500 p-4">データ取得エラー: ${data.error}</p>`;
@@ -291,24 +450,31 @@
                     renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#ffbf00');
                     renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#00ff3f');
                     renderTeamOverall(data.teamOverall, 'team-overall-results');
+                    
+                    // データ表示後にレスポンシブ処理を実行
+                    handleResize();
+                    
                     loadingOverlay.classList.add('hidden');
                 })
                 .withFailureHandler(error => {
                     console.error("Error fetching data: ", error);
                     loadingOverlay.innerHTML = '<p class="text-red-500 p-4">データ取得エラー</p>';
                 })
-                // getTeamData関数にスプレッドシートIDのみを渡す
                 .getTeamData(spreadsheetId);
         }
 
         // --- 初期化処理 ---
         document.addEventListener('DOMContentLoaded', () => {
+            handleResize(); // 初期表示調整
             fetchData(); // 初回データ取得
             setInterval(fetchData, 60000); // 60秒ごとにデータを更新
 
             updateClock();
             setInterval(updateClock, 1000); // 1秒ごとに時計を更新
         });
+
+        // リサイズイベントリスナー
+        window.addEventListener('resize', handleResize);
 
     </script>
 </body>
