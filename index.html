@@ -24,6 +24,8 @@
             color: #F3F4F6;
             text-shadow: 0.1vh 0.1vh 0.1vh rgba(0, 0, 0, 0.5);
             overflow-x: hidden;
+        }
+        
         /* オリジナルのハイスコアカラーリング */
         .hl23 {
             color: RGB(101, 255, 255);
@@ -59,8 +61,58 @@
             background-image: radial-gradient(farthest-side at 50% 0%, rgb(80 91 208 / 50%), rgba(0, 0, 0, 0));
         }
         
-        footer {
-            font-family: 'Ramabhadra', sans-serif;
+        /* 種目バッジ画像 */
+        .event-badge-img {
+            height: 1rem;
+            margin-right: 0.5rem;
+            vertical-align: middle;
+            border-radius: 0.25rem;
+            padding: 0.125rem;
+        }
+        
+        /* 種目別の枠線 - 明度調整 */
+        .event-badge-trap {
+            border: 1.5px solid #c855e3;
+        }
+        
+        .event-badge-skeet {
+            border: 1.5px solid #eebf35;
+        }
+        
+        .event-badge-overall {
+            border: 1.5px solid #22c55e;
+        }
+        
+        /* 団体スコア内の種目バッジ */
+        .team-score-badge {
+            height: 0.875rem;
+            margin-right: 0.25rem;
+            vertical-align: middle;
+            border-radius: 0.25rem;
+            padding: 0.125rem;
+        }
+        
+        /* 団体スコア内の種目別枠線 - 明度調整 */
+        .team-score-badge.trap {
+            border: 1.5px solid #c855e3;
+        }
+        
+        .team-score-badge.skeet {
+            border: 1.5px solid #eebf35;
+        }
+        
+        /* スマホ版：フッター重複防止マージン - フッター高さの1.5倍に調整 */
+        @media (max-width: 1023px) {
+            .fullscreen-container {
+                padding: 0.5rem;
+                padding-bottom: 15rem; /* フッター高さの1.5倍のマージンを確保 */
+            }
+            
+            /* スマホ版のメインコンテンツにも下部マージンを確保 */
+            main {
+                padding-bottom: 3rem !important;
+                margin-bottom: 3rem;
+            }
         }
 
         /* PC版：全画面デジタルサイネージモード */
@@ -145,7 +197,7 @@
     </div>
 
     <!-- スマホ版のみ：ヘッダー情報 -->
-    <header class="mobile-only header-gradient bg-black/50 p-2 rounded-lg shadow-lg mb-2 mx-2 mt-2 flex items-center justify-center space-x-4">
+    <header class="mobile-only header-gradient p-2 mb-2 mx-2 mt-2 flex items-center justify-center space-x-4">
         <img id="event-flag" src="" alt="Flag" class="h-8 rounded-full hidden">
         <h1 id="event-name" class="text-xl font-bold text-white text-center" style="text-shadow: 0.4vh 0.4vh 0.4vh rgba(0, 0, 0, 0.5);"></h1>
     </header>
@@ -162,7 +214,7 @@
                     スキート
                 </button>
                 <button onclick="changeTab('team-overall')" class="tab w-1/3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover:bg-white/10 transition">
-                    総合
+                    総合成績
                 </button>
             </nav>
         </div>
@@ -174,16 +226,32 @@
                 
                 <!-- トラップ種目団体セクション -->
                 <div id="team-trap" class="tab-content lg:!block lg:h-full lg:overflow-y-auto">
-                    <h2 class="section-title desktop-only text-lg font-bold mb-1 text-yellow-400">
-                        <i class="fa-solid fa-bullseye mr-2"></i>トラップ種目 団体
+                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #b219e3;">
+                        <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="event-badge-img event-badge-trap inline">トラップ種目 団体
                     </h2>
                     <div id="team-trap-event" class="space-y-1"></div>
                 </div>
 
                 <!-- スキート種目団体セクション -->
                 <div id="team-skeet" class="tab-content hidden lg:!block lg:h-full lg:overflow-y-auto">
-                    <h2 class="section-title desktop-only text-lg font-bold mb-1 text-purple-400">
-                        <i class="fa-solid fa-compact-disc mr-2"></i>スキート種目 団体
+                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #eebf35;">
+                        <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="event-badge-img event-badge-skeet inline">スキート種目 団体
+                    </h2>
+                    <div id="team-skeet-event" class="space-y-1"></div>
+                </div>
+
+                <!-- トラップ種目団体セクション -->
+                <div id="team-trap" class="tab-content lg:!block lg:h-full lg:overflow-y-auto">
+                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #c855e3;">
+                        <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="event-badge-img event-badge-trap inline">トラップ種目 団体
+                    </h2>
+                    <div id="team-trap-event" class="space-y-1"></div>
+                </div>
+
+                <!-- スキート種目団体セクション -->
+                <div id="team-skeet" class="tab-content hidden lg:!block lg:h-full lg:overflow-y-auto">
+                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #eebf35;">
+                        <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="event-badge-img event-badge-skeet inline">スキート種目 団体
                     </h2>
                     <div id="team-skeet-event" class="space-y-1"></div>
                 </div>
@@ -191,7 +259,7 @@
                 <!-- 総合団体セクション -->
                 <div id="team-overall" class="tab-content hidden lg:!block lg:h-full lg:overflow-y-auto">
                     <h2 class="section-title desktop-only text-lg font-bold mb-1 text-green-400">
-                        <i class="fa-solid fa-crown mr-2"></i>総合団体
+                        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTAwIDQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNDAiIHJ4PSI4IiByeT0iOCIgZmlsbD0iIzIyYzU1ZSIvPgogIDx0ZXh0IHg9IjUwIiB5PSIyNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPk9WRVJBTEM8L3RleHQ+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOCwgOCkiPgogICAgPHBvbHlnb24gcG9pbnRzPSI0LDggOCw0IDEyLDggMTYsNCAyMCw4IDIwLDIwIDQsMjAiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjgiLz4KICAgIDxjaXJjbGUgY3g9IjgiIGN5PSI2IiByPSIxIiBmaWxsPSIjZmJiZjI0Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMiIgY3k9IjUiIHI9IjEuMiIgZmlsbD0iI2ZiYmYyNCIvPgogICAgPGNpcmNsZSBjeD0iMTYiIGN5PSI2IiByPSIxIiBmaWxsPSIjZmJiZjI0Ii8+CiAgPC9nPgo8L3N2Zz4=" class="event-badge-img event-badge-overall inline">総合団体
                     </h2>
                     <div id="team-overall-results" class="space-y-1"></div>
                 </div>
@@ -206,22 +274,11 @@
             <div class="flex items-center space-x-2">
                 <div class="text-left">
                     <div id="event-place" class="text-sm font-bold"></div>
-                    <div id="event-datetime" class="text-xs"></div>
                     <div id="event-weather" class="text-xs"></div>
                 </div>
-                <div class="text-left text-sm">
-                    <div id="status-trap"></div>
-                    <div id="status-skeet"></div>
-                </div>
             </div>
-            <div class="flex items-center space-x-2">
-                 <div class="text-right text-xs">
-                    <div id="event-update-time"></div>
-                    <div>Powered by "S-LIVE"</div>
-                </div>
-                <div id="current-time" class="text-xl font-sans"></div>
-                <img id="sponsor-logo" src="https://s-live.org/wp-content/plugins/s-live/resource/spo/spo_logos_x2bl.png" class="h-6 hidden md:block">
-                <img id="qr-code" src="" class="h-10 w-10 bg-white p-0.5">
+            <div class="flex items-center">
+                <img id="qr-code" src="" class="h-12 w-12 bg-white p-0.5">
             </div>
         </div>
     </footer>
@@ -243,7 +300,7 @@
                 return;
             }
             container.innerHTML = data.map((team) => `
-                <div class="bg-black/30 rounded-lg shadow">
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg shadow-lg border border-white/20">
                     <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center p-2 text-left font-bold">
                         <div class="flex items-center">
                             <span class="team-rank w-8 text-center text-lg">${team.rank}</span>
@@ -293,7 +350,7 @@
                 return;
             }
             container.innerHTML = data.map(team => `
-                <div class="bg-black/30 rounded-lg shadow">
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg shadow-lg border border-white/20">
                     <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center p-2 text-left font-bold">
                         <div class="flex items-center">
                             <span class="team-rank w-8 text-center text-lg">${team.rank}</span>
@@ -307,15 +364,21 @@
                     <div class="accordion-content">
                         <div class="px-2 pb-2 grid grid-cols-1 md:grid-cols-2 gap-2">
                             <div>
-                                <h4 class="font-bold mb-1 text-sm" style="color: #eebf35;">トラップ: ${team.trapTotal}点</h4>
+                                <h4 class="font-bold mb-1 text-sm" style="color: #c855e3;">
+                                    <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="team-score-badge trap inline">
+                                    トラップ: ${team.trapTotal}点
+                                </h4>
                                 <ul class="text-xs space-y-0.5">
-                                    ${team.trapPlayers.map(p => `<li class="flex justify-between player-name"><span>${p.rank}. ${p.name}</span><span class="font-semibold player-score" style="color: #eebf35;">${p.total}</span></li>`).join('')}
+                                    ${team.trapPlayers.map(p => `<li class="flex justify-between player-name"><span>${p.rank}. ${p.name}</span><span class="font-semibold player-score" style="color: #c855e3;">${p.total}</span></li>`).join('')}
                                 </ul>
                             </div>
                             <div>
-                                <h4 class="font-bold mb-1 text-sm" style="color: #b219e3;">スキート: ${team.skeetTotal}点</h4>
+                                <h4 class="font-bold mb-1 text-sm" style="color: #eebf35;">
+                                    <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="team-score-badge skeet inline">
+                                    スキート: ${team.skeetTotal}点
+                                </h4>
                                 <ul class="text-xs space-y-0.5">
-                                    ${team.skeetPlayers.map(p => `<li class="flex justify-between player-name"><span>${p.rank}. ${p.name}</span><span class="font-semibold player-score" style="color: #b219e3;">${p.total}</span></li>`).join('')}
+                                    ${team.skeetPlayers.map(p => `<li class="flex justify-between player-name"><span>${p.rank}. ${p.name}</span><span class="font-semibold player-score" style="color: #eebf35;">${p.total}</span></li>`).join('')}
                                 </ul>
                             </div>
                         </div>
@@ -342,21 +405,8 @@
             const eventPlace = document.getElementById('event-place');
             if (eventPlace) eventPlace.textContent = info.place;
             
-            // HTMLタグを含む部分は innerHTML を使用
-            const eventDatetime = document.getElementById('event-datetime');
-            if (eventDatetime) eventDatetime.innerHTML = `${info.date} ${info.days}`;
-            
             const eventWeather = document.getElementById('event-weather');
             if (eventWeather) eventWeather.innerHTML = info.weather;
-            
-            const eventUpdateTime = document.getElementById('event-update-time');
-            if (eventUpdateTime) eventUpdateTime.innerHTML = info.lastUpdate;
-            
-            const statusTrap = document.getElementById('status-trap');
-            if (statusTrap) statusTrap.textContent = `TRAP: ${info.status.trap}`;
-            
-            const statusSkeet = document.getElementById('status-skeet');
-            if (statusSkeet) statusSkeet.textContent = `SKEET: ${info.status.skeet}`;
             
             const qrCode = document.getElementById('qr-code');
             if (qrCode) qrCode.src = info.qrCodeUrl;
@@ -390,12 +440,7 @@
         }
         
         function updateClock() {
-            const currentTime = document.getElementById('current-time');
-            if (currentTime) {
-                const now = new Date();
-                const timeString = now.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-                currentTime.textContent = timeString;
-            }
+            // 時計機能を削除（フッターから時計を除去したため）
         }
 
         // ウィンドウリサイズ時の表示調整
@@ -447,8 +492,8 @@
                         return;
                     }
                     renderHeaderAndFooter(data.eventInfo);
-                    renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#ffbf00');
-                    renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#00ff3f');
+                    renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#c855e3');
+                    renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#eebf35');
                     renderTeamOverall(data.teamOverall, 'team-overall-results');
                     
                     // データ表示後にレスポンシブ処理を実行
@@ -467,10 +512,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             handleResize(); // 初期表示調整
             fetchData(); // 初回データ取得
-            setInterval(fetchData, 60000); // 60秒ごとにデータを更新
-
-            updateClock();
-            setInterval(updateClock, 1000); // 1秒ごとに時計を更新
+            setInterval(fetchData, 600000); // 10分ごとにデータを更新
         });
 
         // リサイズイベントリスナー
