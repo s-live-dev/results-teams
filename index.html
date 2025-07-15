@@ -224,41 +224,25 @@
             <!-- スマホ：タブ切り替え / PC：3カラム全画面表示 -->
             <div class="lg:grid lg:grid-cols-3 lg:gap-2 lg:h-full">
                 
-                <!-- トラップ種目団体セクション -->
+                <!-- 左カラム：トラップ種目団体セクション -->
                 <div id="team-trap" class="tab-content lg:!block lg:h-full lg:overflow-y-auto">
-                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #b219e3;">
+                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #c855e3;text-align: center;">
                         <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="event-badge-img event-badge-trap inline">トラップ種目 団体
                     </h2>
                     <div id="team-trap-event" class="space-y-1"></div>
                 </div>
 
-                <!-- スキート種目団体セクション -->
+                <!-- 中央カラム：スキート種目団体セクション -->
                 <div id="team-skeet" class="tab-content hidden lg:!block lg:h-full lg:overflow-y-auto">
-                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #eebf35;">
+                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #eebf35;text-align: center;">
                         <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="event-badge-img event-badge-skeet inline">スキート種目 団体
                     </h2>
                     <div id="team-skeet-event" class="space-y-1"></div>
                 </div>
 
-                <!-- トラップ種目団体セクション -->
-                <div id="team-trap" class="tab-content lg:!block lg:h-full lg:overflow-y-auto">
-                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #c855e3;">
-                        <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="event-badge-img event-badge-trap inline">トラップ種目 団体
-                    </h2>
-                    <div id="team-trap-event" class="space-y-1"></div>
-                </div>
-
-                <!-- スキート種目団体セクション -->
-                <div id="team-skeet" class="tab-content hidden lg:!block lg:h-full lg:overflow-y-auto">
-                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #eebf35;">
-                        <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="event-badge-img event-badge-skeet inline">スキート種目 団体
-                    </h2>
-                    <div id="team-skeet-event" class="space-y-1"></div>
-                </div>
-
-                <!-- 総合団体セクション -->
+                <!-- 右カラム：総合団体セクション -->
                 <div id="team-overall" class="tab-content hidden lg:!block lg:h-full lg:overflow-y-auto">
-                    <h2 class="section-title desktop-only text-lg font-bold mb-1 text-green-400">
+                    <h2 class="section-title desktop-only text-lg font-bold mb-1 text-green-400" style="text-align: center;">
                         <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjQwIiB2aWV3Qm94PSIwIDAgMTAwIDQwIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iNDAiIHJ4PSI4IiByeT0iOCIgZmlsbD0iIzIyYzU1ZSIvPgogIDx0ZXh0IHg9IjUwIiB5PSIyNSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmb250LXdlaWdodD0iYm9sZCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0id2hpdGUiPk9WRVJBTEM8L3RleHQ+CiAgPGcgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoOCwgOCkiPgogICAgPHBvbHlnb24gcG9pbnRzPSI0LDggOCw0IDEyLDggMTYsNCAyMCw4IDIwLDIwIDQsMjAiIGZpbGw9IndoaXRlIiBvcGFjaXR5PSIwLjgiLz4KICAgIDxjaXJjbGUgY3g9IjgiIGN5PSI2IiByPSIxIiBmaWxsPSIjZmJiZjI0Ii8+CiAgICA8Y2lyY2xlIGN4PSIxMiIgY3k9IjUiIHI9IjEuMiIgZmlsbD0iI2ZiYmYyNCIvPgogICAgPGNpcmNsZSBjeD0iMTYiIGN5PSI2IiByPSIxIiBmaWxsPSIjZmJiZjI0Ii8+CiAgPC9nPgo8L3N2Zz4=" class="event-badge-img event-badge-overall inline">総合団体
                     </h2>
                     <div id="team-overall-results" class="space-y-1"></div>
@@ -293,6 +277,7 @@
                 default: return '';
             }
         }
+        
         function renderTeamEvent(data, targetId, color) {
             const container = document.getElementById(targetId);
             if (!data || data.length === 0) {

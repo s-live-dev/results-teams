@@ -8,7 +8,7 @@ function doGet(e) {
   template.s = e.parameter.s || ''; 
 
   return template.evaluate()
-      .setTitle('S-LIVE Results - 団体戦')
+      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
       .addMetaTag('viewport', 'width=device-width, initial-scale=1.0');
 }
 
