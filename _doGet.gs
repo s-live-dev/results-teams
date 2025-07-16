@@ -1,3 +1,5 @@
+// S-LIVE 団体戦結果システム - Cursor開発環境テスト
+// 最終更新: 2025/07/16 - Google Workspace連携確認
 /**
  * WebページとしてアクセスされたときにHTMLを返す
  * @param {object} e - イベントオブジェクト
@@ -5,11 +7,11 @@
 function doGet(e) {
   const template = HtmlService.createTemplateFromFile('index');
   // URLパラメータからスプレッドシートIDのみを取得してテンプレートに渡す
-  template.s = e.parameter.s || ''; 
+  template.s = e.parameter.s || '';
 
   return template.evaluate()
-      .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
-      .addMetaTag('viewport', 'width=device-width, initial-scale=1.0');
+    .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
+    .addMetaTag('viewport', 'width=device-width, initial-scale=1.0');
 }
 
 /**
@@ -32,10 +34,10 @@ function getTeamData(s) {
 
     if (!trapSheet) return { error: `Sheet "トラップ" not found.` };
     if (!skeetSheet) return { error: `Sheet "スキート" not found.` };
-    
+
     // 大会情報はsパラメータのみで取得
     const eventInfo = getEventInfoFromSheet(s);
-    
+
     // 各シートから選手データをパース
     const trapPlayers = parsePlayersData(trapSheet, 'trap');
     const skeetPlayers = parsePlayersData(skeetSheet, 'skeet');
@@ -69,7 +71,7 @@ function getEventInfoFromSheet(s) {
   // オリジナルと同じく「大会情報」シートから取得
   var sheet = SpreadsheetApp.openById(s).getSheetByName('大会情報');
   var eData = sheet.getDataRange().getValues().slice(1, 3); // 最大2件のデータを取得
-  
+
   // eData から列　主催協会:[0] が空の行を削除
   eData = eData.filter(function (row) {
     return row[0] !== ''; // インデックス0の列が空ではない行だけを残す
@@ -118,9 +120,9 @@ function getEventInfoFromSheet(s) {
 
   // 団体戦用のQRコード生成（オリジナルのQR Server APIを使用）
   var teamResultsUrl = `${ScriptApp.getService().getUrl()}?s=${s}`;
-  var qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" + 
-                  encodeURIComponent(teamResultsUrl) + 
-                  '&format=png&margin=10&size=150x150';
+  var qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" +
+    encodeURIComponent(teamResultsUrl) +
+    '&format=png&margin=10&size=150x150';
 
   // オリジナルの形式でデータを構築
   return {
@@ -130,10 +132,10 @@ function getEventInfoFromSheet(s) {
     date: '<i class="fa-regular fa-calendar-days"></i> ' + Utilities.formatDate(new Date(row[5]), "Asia/Tokyo", "yy/MM/dd"),
     days: row[4] + 'Day(s)',
     weather: '<i class="fa-solid fa-sun"></i> ' + weatherData.weather[0].description + ' ' +
-             '<i class="fa-solid fa-temperature-three-quarters"></i> ' + weatherData.main.temp + 'c ' +
-             '<i class="fa-solid fa-droplet"></i> ' + weatherData.main.humidity + '% ' +
-             '<i class="fa-solid fa-wind"></i> ' + weatherData.wind.speed + 'm/s ' +
-             '<i class="fa-solid fa-gauge-simple"></i> ' + weatherData.main.pressure + 'hPa',
+      '<i class="fa-solid fa-temperature-three-quarters"></i> ' + weatherData.main.temp + 'c ' +
+      '<i class="fa-solid fa-droplet"></i> ' + weatherData.main.humidity + '% ' +
+      '<i class="fa-solid fa-wind"></i> ' + weatherData.wind.speed + 'm/s ' +
+      '<i class="fa-solid fa-gauge-simple"></i> ' + weatherData.main.pressure + 'hPa',
     lastUpdate: '<i class="fa-regular fa-clock"></i> ' + Utilities.formatDate(new Date(row[2]), 'Asia/Tokyo', "yy/MM/dd HH:mm"),
     qrCodeUrl: qrCodeUrl,
     status: {
@@ -150,23 +152,23 @@ function getEventInfoFromSheet(s) {
  * @returns {Array<object>} 選手オブジェクトの配列
  */
 function parsePlayersData(sheet, discipline) {
-    const data = sheet.getRange("A2:W" + sheet.getLastRow()).getValues();
-    const players = [];
+  const data = sheet.getRange("A2:W" + sheet.getLastRow()).getValues();
+  const players = [];
 
-    data.forEach(row => {
-        if (!row[5] || !row[6]) return; // 氏名(F列)と所属(G列)が空ならスキップ
-        players.push({
-            discipline: discipline,
-            team: row[6], // G列: 所属
-            name: row[5], // F列: 氏名
-            r1: Number(row[7]) || 0,
-            r2: Number(row[8]) || 0,
-            r3: Number(row[9]) || 0,
-            r4: Number(row[10]) || 0,
-            total: Number(row[17]) || 0 // R列: GT
-        });
+  data.forEach(row => {
+    if (!row[5] || !row[6]) return; // 氏名(F列)と所属(G列)が空ならスキップ
+    players.push({
+      discipline: discipline,
+      team: row[6], // G列: 所属
+      name: row[5], // F列: 氏名
+      r1: Number(row[7]) || 0,
+      r2: Number(row[8]) || 0,
+      r3: Number(row[9]) || 0,
+      r4: Number(row[10]) || 0,
+      total: Number(row[17]) || 0 // R列: GT
     });
-    return players;
+  });
+  return players;
 }
 
 /**
@@ -175,59 +177,59 @@ function parsePlayersData(sheet, discipline) {
  * @returns {object} 計算された団体戦の結果
  */
 function calculateTeamResults(players) {
-    const teams = players.reduce((acc, player) => {
-        if (!acc[player.team]) {
-            acc[player.team] = { trap: [], skeet: [] };
-        }
-        acc[player.team][player.discipline].push(player);
-        return acc;
-    }, {});
+  const teams = players.reduce((acc, player) => {
+    if (!acc[player.team]) {
+      acc[player.team] = { trap: [], skeet: [] };
+    }
+    acc[player.team][player.discipline].push(player);
+    return acc;
+  }, {});
 
-    const eventTrap = [], eventSkeet = [], overall = [];
+  const eventTrap = [], eventSkeet = [], overall = [];
 
-    for (const teamName in teams) {
-        const teamPlayers = teams[teamName];
-        teamPlayers.trap.sort((a, b) => b.total - a.total);
-        teamPlayers.skeet.sort((a, b) => b.total - a.total);
+  for (const teamName in teams) {
+    const teamPlayers = teams[teamName];
+    teamPlayers.trap.sort((a, b) => b.total - a.total);
+    teamPlayers.skeet.sort((a, b) => b.total - a.total);
 
-        const eventTrapPlayers = teamPlayers.trap.slice(0, 3);
-        if (eventTrapPlayers.length > 0) {
-            eventTrap.push({
-                name: teamName,
-                total: eventTrapPlayers.reduce((sum, p) => sum + p.total, 0),
-                players: eventTrapPlayers.map((p, i) => ({ ...p, rank: i + 1 }))
-            });
-        }
-        
-        const eventSkeetPlayers = teamPlayers.skeet.slice(0, 3);
-        if (eventSkeetPlayers.length > 0) {
-            eventSkeet.push({
-                name: teamName,
-                total: eventSkeetPlayers.reduce((sum, p) => sum + p.total, 0),
-                players: eventSkeetPlayers.map((p, i) => ({ ...p, rank: i + 1 }))
-            });
-        }
-
-        const overallTrapPlayers = teamPlayers.trap.slice(0, 5);
-        const overallSkeetPlayers = teamPlayers.skeet.slice(0, 3);
-        
-        if (overallTrapPlayers.length > 0 || overallSkeetPlayers.length > 0) {
-            const trapTotal = overallTrapPlayers.reduce((sum, p) => sum + p.total, 0);
-            const skeetTotal = overallSkeetPlayers.reduce((sum, p) => sum + p.total, 0);
-            overall.push({
-                name: teamName,
-                trapTotal: trapTotal,
-                skeetTotal: skeetTotal,
-                overallTotal: trapTotal + skeetTotal,
-                trapPlayers: overallTrapPlayers.map((p, i) => ({ name: p.name, total: p.total, rank: i + 1 })),
-                skeetPlayers: overallSkeetPlayers.map((p, i) => ({ name: p.name, total: p.total, rank: i + 1 }))
-            });
-        }
+    const eventTrapPlayers = teamPlayers.trap.slice(0, 3);
+    if (eventTrapPlayers.length > 0) {
+      eventTrap.push({
+        name: teamName,
+        total: eventTrapPlayers.reduce((sum, p) => sum + p.total, 0),
+        players: eventTrapPlayers.map((p, i) => ({ ...p, rank: i + 1 }))
+      });
     }
 
-    eventTrap.sort((a, b) => b.total - a.total).forEach((t, i) => t.rank = i + 1);
-    eventSkeet.sort((a, b) => b.total - a.total).forEach((t, i) => t.rank = i + 1);
-    overall.sort((a, b) => b.overallTotal - a.overallTotal).forEach((t, i) => t.rank = i + 1);
+    const eventSkeetPlayers = teamPlayers.skeet.slice(0, 3);
+    if (eventSkeetPlayers.length > 0) {
+      eventSkeet.push({
+        name: teamName,
+        total: eventSkeetPlayers.reduce((sum, p) => sum + p.total, 0),
+        players: eventSkeetPlayers.map((p, i) => ({ ...p, rank: i + 1 }))
+      });
+    }
 
-    return { eventTrap, eventSkeet, overall };
+    const overallTrapPlayers = teamPlayers.trap.slice(0, 5);
+    const overallSkeetPlayers = teamPlayers.skeet.slice(0, 3);
+
+    if (overallTrapPlayers.length > 0 || overallSkeetPlayers.length > 0) {
+      const trapTotal = overallTrapPlayers.reduce((sum, p) => sum + p.total, 0);
+      const skeetTotal = overallSkeetPlayers.reduce((sum, p) => sum + p.total, 0);
+      overall.push({
+        name: teamName,
+        trapTotal: trapTotal,
+        skeetTotal: skeetTotal,
+        overallTotal: trapTotal + skeetTotal,
+        trapPlayers: overallTrapPlayers.map((p, i) => ({ name: p.name, total: p.total, rank: i + 1 })),
+        skeetPlayers: overallSkeetPlayers.map((p, i) => ({ name: p.name, total: p.total, rank: i + 1 }))
+      });
+    }
+  }
+
+  eventTrap.sort((a, b) => b.total - a.total).forEach((t, i) => t.rank = i + 1);
+  eventSkeet.sort((a, b) => b.total - a.total).forEach((t, i) => t.rank = i + 1);
+  overall.sort((a, b) => b.overallTotal - a.overallTotal).forEach((t, i) => t.rank = i + 1);
+
+  return { eventTrap, eventSkeet, overall };
 }
