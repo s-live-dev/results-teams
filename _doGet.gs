@@ -1,5 +1,5 @@
 // S-LIVE 団体戦結果システム - Cursor開発環境テスト
-// 最終更新: 2025/07/16 - Google Workspace連携確認
+// 最終更新: 2025/07/18 - CSS分離対応
 /**
  * WebページとしてアクセスされたときにHTMLを返す
  * @param {object} e - イベントオブジェクト
@@ -12,6 +12,15 @@ function doGet(e) {
   return template.evaluate()
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
     .addMetaTag('viewport', 'width=device-width, initial-scale=1.0');
+}
+
+/**
+ * 他のHTMLファイル（CSS、JSなど）をインクルードするためのヘルパー関数
+ * @param {string} filename - インクルードするファイル名
+ * @returns {string} ファイルの内容
+ */
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
 
 /**
