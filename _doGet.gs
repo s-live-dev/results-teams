@@ -221,8 +221,24 @@ function calculateTeamResults(players) {
         trapTotal: trapTotal,
         skeetTotal: skeetTotal,
         overallTotal: trapTotal + skeetTotal,
-        trapPlayers: overallTrapPlayers.map((p, i) => ({ name: p.name, total: p.total, rank: i + 1 })),
-        skeetPlayers: overallSkeetPlayers.map((p, i) => ({ name: p.name, total: p.total, rank: i + 1 }))
+        trapPlayers: overallTrapPlayers.map((p, i) => ({
+          name: p.name,
+          total: p.total,
+          rank: i + 1,
+          r1: p.r1,
+          r2: p.r2,
+          r3: p.r3,
+          r4: p.r4
+        })),
+        skeetPlayers: overallSkeetPlayers.map((p, i) => ({
+          name: p.name,
+          total: p.total,
+          rank: i + 1,
+          r1: p.r1,
+          r2: p.r2,
+          r3: p.r3,
+          r4: p.r4
+        }))
       });
     }
   }
