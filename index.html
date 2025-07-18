@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S-LIVE Results - 団体戦</title>
     
-    <!-- Tailwind CSSの読み込み -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
     <!-- Font Awesomeの読み込み -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -24,40 +21,40 @@
 <body class="flex flex-col">
 
     <!-- ローディング表示 -->
-    <div id="loading-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-80 flex justify-center items-center z-50">
+    <div id="loading-overlay" class="fixed inset-0 bg-overlay flex justify-center items-center z-50">
         <i class="fa-solid fa-spinner fa-spin text-4xl text-white"></i>
     </div>
 
     <!-- スマホ版のみ：ヘッダー情報 -->
-    <header class="mobile-only header-gradient p-2 mb-2 mx-2 mt-2 flex items-center justify-center space-x-4">
-        <img id="event-flag" src="" alt="Flag" class="h-8 rounded-full hidden">
-        <h1 id="event-name" class="text-xl font-bold text-white text-center" style="text-shadow: 0.4vh 0.4vh 0.4vh rgba(0, 0, 0, 0.5);"></h1>
+    <header class="mobile-only header-gradient">
+        <img id="event-flag" src="" alt="Flag" class="hidden">
+        <h1 id="event-name" class="text-center"></h1>
     </header>
 
     <div class="fullscreen-container flex-grow">
         
         <!-- スマホ版のみ：タブナビゲーション -->
-        <div class="mobile-only mb-2 border-b border-white/20">
-            <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
-                <button onclick="changeTab('team-trap')" class="tab active w-1/3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover:bg-white/10 transition">
+        <div class="mobile-only mb-2 border-b border-white-20">
+            <nav class="flex flex-wrap" style="margin-bottom: -1px;" aria-label="Tabs">
+                <button onclick="changeTab('team-trap')" class="tab active w-1-3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover-bg-white-10 transition">
                     トラップ
                 </button>
-                <button onclick="changeTab('team-skeet')" class="tab w-1/3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover:bg-white/10 transition">
+                <button onclick="changeTab('team-skeet')" class="tab w-1-3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover-bg-white-10 transition">
                     スキート
                 </button>
-                <button onclick="changeTab('team-overall')" class="tab w-1/3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover:bg-white/10 transition">
+                <button onclick="changeTab('team-overall')" class="tab w-1-3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover-bg-white-10 transition">
                     総合成績
                 </button>
             </nav>
         </div>
 
         <!-- コンテンツエリア -->
-        <main class="pb-2 lg:pb-0 lg:h-full">
+        <main class="pb-2 lg-pb-0 lg-h-full">
             <!-- スマホ：タブ切り替え / PC：3カラム全画面表示 -->
-            <div class="lg:grid lg:grid-cols-3 lg:gap-2 lg:h-full">
+            <div class="lg-grid lg-grid-cols-3 lg-gap-2 lg-h-full">
                 
                 <!-- 左カラム：トラップ種目団体セクション -->
-                <div id="team-trap" class="tab-content lg:!block lg:h-full lg:overflow-y-auto">
+                <div id="team-trap" class="tab-content lg-block lg-h-full lg-overflow-y-auto">
                     <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #c855e3;text-align: center;">
                         <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="event-badge-img event-badge-trap inline">トラップ種目 団体
                     </h2>
@@ -65,7 +62,7 @@
                 </div>
 
                 <!-- 中央カラム：スキート種目団体セクション -->
-                <div id="team-skeet" class="tab-content hidden lg:!block lg:h-full lg:overflow-y-auto">
+                <div id="team-skeet" class="tab-content hidden lg-block lg-h-full lg-overflow-y-auto">
                     <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #eebf35;text-align: center;">
                         <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="event-badge-img event-badge-skeet inline">スキート種目 団体
                     </h2>
@@ -73,7 +70,7 @@
                 </div>
 
                 <!-- 右カラム：総合団体セクション -->
-                <div id="team-overall" class="tab-content hidden lg:!block lg:h-full lg:overflow-y-auto">
+                <div id="team-overall" class="tab-content hidden lg-block lg-h-full lg-overflow-y-auto">
                     <h2 class="section-title desktop-only text-lg font-bold mb-1 text-green-400" style="text-align: center;">
                       <img src="https://s-live.org/wp-content/plugins/s-live/resource/TEAM.png" class="event-badge-img event-badge-team inline">総合成績 団体
                     </h2>
@@ -85,7 +82,7 @@
     </div>
 
     <!-- スマホ版のみ：フッター -->
-    <footer class="mobile-only bg-black/30 p-1 fixed bottom-0 left-0 right-0 text-white/80">
+    <footer class="mobile-only bg-footer p-1 fixed bottom-0 left-0 right-0 text-white-80">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <div class="text-left">
@@ -94,19 +91,29 @@
                 </div>
             </div>
             <div class="flex items-center">
-                <img id="qr-code" src="" class="h-12 w-12 bg-white p-0.5">
+                <img id="qr-code" src="" class="h-12 w-12 bg-white p-0-5">
             </div>
         </div>
     </footer>
 
     <script>
-        // スコアカラーリング関数
-        function getScoreClass(score) {
+        // スコアカラーリング関数 - インラインスタイルで確実に適用
+        function getScoreStyle(score) {
             switch (score) {
-                case 23: return 'hl23';
-                case 24: return 'hl24';
-                case 25: return 'hl25';
-                default: return '';
+                case 23: return 'color: RGB(101, 255, 255) !important;';
+                case 24: return 'color: RGB(255, 153, 229) !important; text-decoration: underline solid !important;';
+                case 25: return 'color: RGB(255, 255, 101) !important; text-decoration: underline double !important;';
+                default: return 'color: #F3F4F6 !important;';
+            }
+        }
+        
+        // 合計スコア用のカラーリング関数
+        function getTotalScoreStyle(score, defaultColor) {
+            switch (score) {
+                case 23: return 'color: RGB(101, 255, 255) !important;';
+                case 24: return 'color: RGB(255, 153, 229) !important; text-decoration: underline solid !important;';
+                case 25: return 'color: RGB(255, 255, 101) !important; text-decoration: underline double !important;';
+                default: return `color: ${defaultColor} !important;`;
             }
         }
         
@@ -117,20 +124,20 @@
                 return;
             }
             container.innerHTML = data.map((team) => `
-                <div class="bg-white/10 backdrop-blur-sm rounded-lg shadow-lg border border-white/20">
-                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 text-left font-bold">
+                <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
+                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 text-left font-bold" style="color: #F3F4F6 !important;">
                         <div class="flex items-center justify-center">
-                            <span class="team-rank w-8 text-left text-lg">${team.rank}</span>
-                            <span class="team-name flex-1 pr-4 text-center">${team.name}</span>
+                            <span class="team-rank w-8 text-left text-lg" style="color: #F3F4F6 !important;">${team.rank}</span>
+                            <span class="team-name flex-1 pr-4 text-center" style="color: #F3F4F6 !important;">${team.name}</span>
                         </div>
                         <div class="flex items-center justify-center">
-                            <span class="team-total text-xl mr-0" style="color: ${color};">${team.total}</span>
-                            <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300" style="margin-left: 0.5rem;"></i>
+                            <span class="team-total text-xl mr-0" style="${getTotalScoreStyle(team.total, color)}">${team.total}</span>
+                            <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300" style="margin-left: 0.5rem; color: #F3F4F6 !important;"></i>
                         </div>
                     </button>
                     <div class="accordion-content">
                         <div class="px-6 overflow-x-auto">
-                            <table class="w-full text-sm min-w-[300px]" style="table-layout: fixed !important; width: 100% !important;">
+                            <table class="w-full text-sm min-w-300 table-fixed">
                                 <colgroup>
                                     <col style="width: 7% !important;">   <!-- 順位 -->
                                     <col style="width: 40% !important;">  <!-- 選手名 -->
@@ -140,16 +147,16 @@
                                     <col style="width: 8% !important;">   <!-- R4 -->
                                     <col style="width: 13% !important;">  <!-- 合計 -->
                                 </colgroup>
-                                <tbody class="divide-y divide-white/20">
+                                <tbody class="divide-y">
                                     ${team.players.map(p => `
-                                        <tr class="text-gray-200">
-                                            <td class="py-0.5 player-score">${p.rank}</td>
-                                    <td class="py-0.5 pl-0 player-name">${p.name}</td>
-                                            <td class="text-right py-0.5 player-score ${getScoreClass(p.r1)}">${p.r1}</td>
-                                            <td class="text-right py-0.5 player-score ${getScoreClass(p.r2)}">${p.r2}</td>
-                                            <td class="text-right py-0.5 player-score ${getScoreClass(p.r3)}">${p.r3}</td>
-                                            <td class="text-right py-0.5 player-score ${getScoreClass(p.r4)}">${p.r4}</td>
-                                            <td class="text-right lg:text-center py-0.5 pr-0 font-bold player-score" style="color: ${color};">${p.total}</td>
+                                        <tr style="color: #F3F4F6 !important;">
+                                            <td class="py-0-5 player-score" style="color: #F3F4F6 !important;">${p.rank}</td>
+                                    <td class="py-0-5 pl-0 player-name" style="color: #F3F4F6 !important;">${p.name}</td>
+                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r1)}">${p.r1}</td>
+                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r2)}">${p.r2}</td>
+                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r3)}">${p.r3}</td>
+                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r4)}">${p.r4}</td>
+                                            <td class="text-right lg-text-center py-0-5 pr-0 font-bold player-score" style="${getTotalScoreStyle(p.total, color)}">${p.total}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
@@ -167,27 +174,27 @@
                 return;
             }
             container.innerHTML = data.map(team => `
-                <div class="bg-white/10 backdrop-blur-sm rounded-lg shadow-lg border border-white/20">
-                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 lg:py-1 text-left font-bold">
+                <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
+                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
                         <div class="flex items-center justify-center">
-                            <span class="team-rank w-8 text-left text-lg lg:text-base">${team.rank}</span>
-                            <span class="team-name flex-1 pr-4 text-center lg:text-base">${team.name}</span>
+                            <span class="team-rank w-8 text-left text-lg lg-text-base" style="color: #F3F4F6 !important;">${team.rank}</span>
+                            <span class="team-name flex-1 pr-4 text-center lg-text-base" style="color: #F3F4F6 !important;">${team.name}</span>
                         </div>
                         <div class="flex items-center justify-center">
-                            <span class="team-total text-xl lg:text-lg text-green-400 mr-0">${team.overallTotal}</span>
-                            <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300" style="margin-left: 0.5rem;"></i>
+                            <span class="team-total text-xl lg-text-lg mr-0" style="${getTotalScoreStyle(team.overallTotal, '#4ade80')}">${team.overallTotal}</span>
+                            <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300" style="margin-left: 0.5rem; color: #F3F4F6 !important;"></i>
                         </div>
                     </button>
                     <div class="accordion-content">
                         <div class="px-6">
-                            <div class="lg:grid lg:grid-cols-2 lg:gap-4">
-                                <div class="mb-4 lg:mb-1">
-                                    <h4 class="font-bold mb-2 lg:mb-1 text-sm lg:font-black" style="color: #c855e3;">
+                            <div class="lg-grid lg-grid-cols-2 lg-gap-4">
+                                <div class="mb-4 lg-mb-1">
+                                    <h4 class="font-bold mb-2 lg-mb-1 text-sm lg-font-black" style="color: #c855e3;">
                                         <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="team-score-badge trap inline">
-                                        トラップ: ${team.trapTotal}点
+                                        トラップ: <span style="${getTotalScoreStyle(team.trapTotal, '#c855e3')}">${team.trapTotal}点</span>
                                     </h4>
                                     <div class="overflow-x-auto">
-                                        <table class="w-full text-sm min-w-[300px]" style="table-layout: fixed !important; width: 100% !important;">
+                                        <table class="w-full text-sm min-w-300 table-fixed">
                                             <colgroup>
                                                 <col style="width: 7% !important;">   <!-- 順位 -->
                                                 <col style="width: 40% !important;">  <!-- 選手名 -->
@@ -197,16 +204,16 @@
                                                 <col style="width: 8% !important;">   <!-- R4 -->
                                                 <col style="width: 13% !important;">  <!-- 合計 -->
                                             </colgroup>
-                                            <tbody class="divide-y divide-white/20">
+                                            <tbody class="divide-y">
                                                 ${team.trapPlayers.map(p => `
-                                                    <tr class="text-gray-200">
-                                                        <td class="py-0.5 lg:py-0 player-score lg:text-xs lg:leading-tight" style="font-size: 0.75em;">${p.rank}</td>
-                                                        <td class="py-0.5 lg:py-0 pl-0 player-name lg:text-xs lg:leading-tight" style="font-size: 0.75em;">${p.name}</td>
-                                                        <td class="text-right py-0.5 lg:py-0 player-score lg:text-xs lg:leading-tight ${getScoreClass(p.r1)}" style="font-size: 0.75em;">${p.r1}</td>
-                                                        <td class="text-right py-0.5 lg:py-0 player-score lg:text-xs lg:leading-tight ${getScoreClass(p.r2)}" style="font-size: 0.75em;">${p.r2}</td>
-                                                        <td class="text-right py-0.5 lg:py-0 player-score lg:text-xs lg:leading-tight ${getScoreClass(p.r3)}" style="font-size: 0.75em;">${p.r3}</td>
-                                                        <td class="text-right py-0.5 lg:py-0 player-score lg:text-xs lg:leading-tight ${getScoreClass(p.r4)}" style="font-size: 0.75em;">${p.r4}</td>
-                                                        <td class="text-right lg:text-center py-0.5 lg:py-0 pr-0 font-bold player-score lg:text-xs lg:leading-tight" style="color: #c855e3; font-size: 0.75em;">${p.total}</td>
+                                                    <tr style="color: #F3F4F6 !important;">
+                                                        <td class="py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="font-size: 0.75em; color: #F3F4F6 !important;">${p.rank}</td>
+                                                        <td class="py-0-5 lg-py-0 pl-0 player-name lg-text-xs lg-leading-tight" style="font-size: 0.75em; color: #F3F4F6 !important;">${p.name}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r1)} font-size: 0.75em;">${p.r1}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r2)} font-size: 0.75em;">${p.r2}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)} font-size: 0.75em;">${p.r3}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)} font-size: 0.75em;">${p.r4}</td>
+                                                        <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight" style="${getTotalScoreStyle(p.total, '#c855e3')} font-size: 0.75em;">${p.total}</td>
                                                     </tr>
                                                 `).join('')}
                                             </tbody>
@@ -214,12 +221,12 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <h4 class="font-bold mb-2 lg:mb-1 text-sm lg:font-black" style="color: #eebf35;">
+                                    <h4 class="font-bold mb-2 lg-mb-1 text-sm lg-font-black" style="color: #eebf35;">
                                         <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="team-score-badge skeet inline">
-                                        スキート: ${team.skeetTotal}点
+                                        スキート: <span style="${getTotalScoreStyle(team.skeetTotal, '#eebf35')}">${team.skeetTotal}点</span>
                                     </h4>
                                     <div class="overflow-x-auto">
-                                        <table class="w-full text-sm min-w-[300px]" style="table-layout: fixed !important; width: 100% !important;">
+                                        <table class="w-full text-sm min-w-300 table-fixed">
                                             <colgroup>
                                                 <col style="width: 7% !important;">   <!-- 順位 -->
                                                 <col style="width: 40% !important;">  <!-- 選手名 -->
@@ -229,16 +236,16 @@
                                                 <col style="width: 8% !important;">   <!-- R4 -->
                                                 <col style="width: 13% !important;">  <!-- 合計 -->
                                             </colgroup>
-                                            <tbody class="divide-y divide-white/20">
+                                            <tbody class="divide-y">
                                                 ${team.skeetPlayers.map(p => `
-                                                    <tr class="text-gray-200">
-                                                        <td class="py-0.5 lg:py-0 player-score lg:text-xs lg:leading-tight" style="font-size: 0.75em;">${p.rank}</td>
-                                                        <td class="py-0.5 lg:py-0 pl-0 player-name lg:text-xs lg:leading-tight" style="font-size: 0.75em;">${p.name}</td>
-                                                        <td class="text-right py-0.5 lg:py-0 player-score lg:text-xs lg:leading-tight ${getScoreClass(p.r1)}" style="font-size: 0.75em;">${p.r1}</td>
-                                                        <td class="text-right py-0.5 lg:py-0 player-score lg:text-xs lg:leading-tight ${getScoreClass(p.r2)}" style="font-size: 0.75em;">${p.r2}</td>
-                                                        <td class="text-right py-0.5 lg:py-0 player-score lg:text-xs lg:leading-tight ${getScoreClass(p.r3)}" style="font-size: 0.75em;">${p.r3}</td>
-                                                        <td class="text-right py-0.5 lg:py-0 player-score lg:text-xs lg:leading-tight ${getScoreClass(p.r4)}" style="font-size: 0.75em;">${p.r4}</td>
-                                                        <td class="text-right lg:text-center py-0.5 lg:py-0 pr-0 font-bold player-score lg:text-xs lg:leading-tight" style="color: #eebf35; font-size: 0.75em;">${p.total}</td>
+                                                    <tr style="color: #F3F4F6 !important;">
+                                                        <td class="py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="font-size: 0.75em; color: #F3F4F6 !important;">${p.rank}</td>
+                                                        <td class="py-0-5 lg-py-0 pl-0 player-name lg-text-xs lg-leading-tight" style="font-size: 0.75em; color: #F3F4F6 !important;">${p.name}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r1)} font-size: 0.75em;">${p.r1}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r2)} font-size: 0.75em;">${p.r2}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)} font-size: 0.75em;">${p.r3}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)} font-size: 0.75em;">${p.r4}</td>
+                                                        <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight" style="${getTotalScoreStyle(p.total, '#eebf35')} font-size: 0.75em;">${p.total}</td>
                                                     </tr>
                                                 `).join('')}
                                             </tbody>

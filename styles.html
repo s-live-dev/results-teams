@@ -1,51 +1,588 @@
-/* S-LIVE団体戦結果システム - スタイルシート */
+/* S-LIVE団体戦結果システム - 拡張スタイルシート */
+/* Tailwind CSS → カスタムCSS変換版 */
 /* 最終更新: 2025/07/18 */
 
-/* S-LIVEスタイル */
+/* === ベースリセット === */
+* {
+    box-sizing: border-box;
+}
+
+/* === S-LIVEオリジナルスタイル === */
 body {
     font-family: 'BIZ UDGothic', 'Noto Sans JP', sans-serif;
     background: linear-gradient(270deg, #1e2569, #19115d, #2b1364, #2d0535);
-    color: #F3F4F6;
+    color: #F3F4F6 !important;
     text-shadow: 0.1vh 0.1vh 0.1vh rgba(0, 0, 0, 0.5);
     overflow-x: hidden;
+    margin: 0;
+    padding: 0;
 }
 
-/* オリジナルのハイスコアカラーリング */
+/* オリジナルのハイスコアカラーリング - 最優先適用 */
 .hl23 {
-    color: RGB(101, 255, 255);
+    color: RGB(101, 255, 255) !important;
 }
 
 .hl24 {
-    color: RGB(255, 153, 229);
-    text-decoration: underline solid;
+    color: RGB(255, 153, 229) !important;
+    text-decoration: underline solid !important;
 }
 
 .hl25 {
-    color: RGB(255, 255, 101);
-    text-decoration: underline double;
+    color: RGB(255, 255, 101) !important;
+    text-decoration: underline double !important;
 }
 
+/* ハイスコアクラス適用時はインラインスタイルよりも優先 */
+td.hl23, td.hl24, td.hl25 {
+    color: inherit !important;
+}
+
+span.hl23, span.hl24, span.hl25 {
+    color: inherit !important;
+}
+
+/* === レイアウトユーティリティ === */
+.flex {
+    display: flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.grid {
+    display: grid;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.space-x-2 > * + * {
+    margin-left: 0.5rem;
+}
+
+.space-x-4 > * + * {
+    margin-left: 1rem;
+}
+
+.space-y-1 > * + * {
+    margin-top: 0.25rem;
+}
+
+/* === Gap（間隔）=== */
+.gap-1rem {
+    gap: 1rem;
+}
+
+/* === フレックス・グリッドヘルパー === */
+.flex-1 {
+    flex: 1 1 0%;
+}
+
+.flex-shrink-0 {
+    flex-shrink: 0;
+}
+
+.flex-shrink-1 {
+    flex-shrink: 1;
+}
+
+.flex-grow-0 {
+    flex-grow: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* === 位置・表示 === */
+.fixed {
+    position: fixed !important;
+}
+
+.bottom-0 {
+    bottom: 0 !important;
+}
+
+.left-0 {
+    left: 0 !important;
+}
+
+.right-0 {
+    right: 0 !important;
+}
+
+.inset-0 {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.relative {
+    position: relative;
+}
+
+.hidden {
+    display: none;
+}
+
+.block {
+    display: block;
+}
+
+.inline {
+    display: inline;
+}
+
+/* === 幅・高さ === */
+.w-full {
+    width: 100%;
+}
+
+.w-1-3 {
+    width: 33.333333%;
+}
+
+.w-8 {
+    width: 2rem;
+}
+
+.w-12 {
+    width: 3rem;
+}
+
+.w-auto {
+    width: auto;
+}
+
+.h-8 {
+    height: 2rem;
+}
+
+.h-12 {
+    height: 3rem;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.min-w-300 {
+    min-width: 300px;
+}
+
+/* === マージン・パディング === */
+.p-0-5 {
+    padding: 0.125rem;
+}
+
+.p-1 {
+    padding: 0.25rem;
+}
+
+.p-2 {
+    padding: 0.5rem;
+}
+
+.p-4 {
+    padding: 1rem;
+}
+
+.px-1 {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+.px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.py-0-5 {
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
+}
+
+.py-1 {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+}
+
+.py-2 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.pl-0 {
+    padding-left: 0;
+}
+
+.pr-0 {
+    padding-right: 0;
+}
+
+.pr-4 {
+    padding-right: 1rem;
+}
+
+.mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.mx-2 {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.mr-0 {
+    margin-right: 0;
+}
+
+/* === 背景・色 === */
+.bg-overlay {
+    background-color: rgba(17, 24, 39, 0.8) !important;
+}
+
+.bg-card {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.bg-footer {
+    background-color: rgba(0, 0, 0, 0.3) !important;
+}
+
+.bg-white {
+    background-color: white !important;
+}
+
+.text-white {
+    color: white !important;
+}
+
+.text-gray-200 {
+    color: #e5e7eb !important;
+}
+
+.text-gray-400 {
+    color: #9ca3af !important;
+}
+
+.text-white-80 {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* オリジナルv1の種目別カラーリング復活 */
+.text-green-400 {
+    color: #4ade80 !important;
+}
+
+.text-red-500 {
+    color: #ef4444 !important;
+}
+
+/* === テキスト === */
+.text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.leading-1-2 {
+    line-height: 1.2;
+}
+
+/* === ボーダー・影 === */
+.border {
+    border-width: 1px;
+}
+
+.border-b {
+    border-bottom-width: 1px;
+}
+
+.border-b-2 {
+    border-bottom-width: 2px;
+}
+
+.border-transparent {
+    border-color: transparent;
+}
+
+.border-white-20 {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.rounded-full {
+    border-radius: 9999px;
+}
+
+.rounded-50 {
+    border-radius: 50%;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* === エフェクト === */
+.backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+}
+
+.transition {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.transition-transform {
+    transition-property: transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.duration-300 {
+    transition-duration: 300ms;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}
+
+/* === オーバーフロー === */
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.overflow-x-auto {
+    overflow-x: auto;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}
+
+/* === Z-index === */
+.z-50 {
+    z-index: 50;
+}
+
+.z-1000 {
+    z-index: 1000;
+}
+
+/* === Hover効果 === */
+.hover-bg-white-10:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* === 分割線 === */
+.divide-y > * + * {
+    border-top-width: 1px;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* === アコーディオン === */
 .accordion-content {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease-out;
 }
 
-.tab.active {
-    background-color: #3B82F6;
-    color: white;
-    border-bottom-color: transparent;
+/* ボタンデフォルトスタイル完全リセット */
+button {
+    border: none !important;
+    outline: none !important;
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
 }
 
-::-webkit-scrollbar { display: none; }
--ms-overflow-style: none;
-scrollbar-width: none;
+/* 動的生成要素への強制色設定 */
+button, span, div, td, th, tr {
+    color: inherit !important;
+}
 
+/* JavaScript生成要素の確実な色設定 */
+[class*="team-"], [class*="player-"] {
+    color: #F3F4F6 !important;
+}
+
+/* テーブル要素の強制色設定 */
+table *, tbody *, tr *, td *, th * {
+    color: inherit !important;
+}
+
+/* アコーディオンヘッダーの背景色を強制適用 */
+.bg-card {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(4px) !important;
+}
+
+.bg-card.backdrop-blur-sm {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(4px) !important;
+}
+
+/* 都道府県行のテキスト色修正（チーム名のみ、スコア色は維持） */
+button.bg-card {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    background-image: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #F3F4F6 !important;
+}
+
+/* チーム名・順位のみ白色、スコア部分は除外 */
+button.bg-card .team-rank,
+button.bg-card .team-name {
+    color: #F3F4F6 !important;
+}
+
+/* === タブ === */
+.tab {
+    color: #F3F4F6 !important;
+    background-color: transparent !important;
+    border: none !important;
+}
+
+.tab.active {
+    background-color: #3B82F6 !important;
+    color: white !important;
+    border-bottom-color: transparent !important;
+}
+
+/* 動的生成要素への最強制色設定 - ハイスコア除外 */
+.bg-card button:not(.hl23):not(.hl24):not(.hl25),
+.bg-card button *:not(.hl23):not(.hl24):not(.hl25),
+.bg-card span:not(.hl23):not(.hl24):not(.hl25),
+.bg-card div:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
+    color: #F3F4F6 !important;
+}
+
+/* テーブル内全要素の色強制 - ハイスコア除外 */
+tbody tr:not(.hl23):not(.hl24):not(.hl25),
+tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
+    color: #F3F4F6 !important;
+}
+
+/* ハイスコア要素は強制白文字から除外 */
+.hl23, .hl24, .hl25,
+.hl23 *, .hl24 *, .hl25 * {
+    color: inherit !important;
+}
+
+/* アコーディオン内容の色強制 - ハイスコア除外 */
+.accordion-content:not(.hl23):not(.hl24):not(.hl25),
+.accordion-content *:not(.hl23):not(.hl24):not(.hl25) {
+    color: inherit !important;
+}
+
+/* === スクロールバー非表示 === */
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+* {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* === ヘッダーグラデーション === */
 .header-gradient {
     background-image: radial-gradient(farthest-side at 50% 0%, rgb(80 91 208 / 50%), rgba(0, 0, 0, 0));
 }
 
-/* 種目バッジ画像 */
+/* === 種目バッジ画像 === */
 .event-badge-img {
     height: 1.2em;
     margin-right: 0.5rem;
@@ -55,7 +592,6 @@ scrollbar-width: none;
     transform: translateY(-0.1em);
 }
 
-/* 種目別の枠線 - 明度調整 */
 .event-badge-trap {
     border: 1.5px solid #c855e3;
 }
@@ -72,7 +608,6 @@ scrollbar-width: none;
     border: 1.5px solid #22c55e;
 }
 
-/* 団体スコア内の種目バッジ */
 .team-score-badge {
     height: 1.1em;
     margin-right: 0.25rem;
@@ -82,7 +617,6 @@ scrollbar-width: none;
     transform: translateY(-0.1em);
 }
 
-/* 団体スコア内の種目別枠線 - 明度調整 */
 .team-score-badge.trap {
     border: 1.5px solid #c855e3;
 }
@@ -91,34 +625,196 @@ scrollbar-width: none;
     border: 1.5px solid #eebf35;
 }
 
-/* スマホ版：フッター重複防止マージン - フッター高さの1.5倍に調整 */
+/* === レスポンシブ：スマホ版 === */
 @media (max-width: 1023px) {
-    .fullscreen-container {
-        padding: 0.5rem;
-        padding-bottom: 15rem; /* フッター高さの1.5倍のマージンを確保 */
+    body {
+        min-height: 100vh;
     }
     
-    /* スマホ版のメインコンテンツにも下部マージンを確保 */
+    .fullscreen-container {
+        padding: 0.5rem;
+        padding-bottom: 15rem;
+    }
+    
     main {
         padding-bottom: 3rem !important;
         margin-bottom: 3rem;
     }
+    
+    .desktop-only {
+        display: none !important;
+    }
+    
+    /* スマートフォン版フッター固定強化 */
+    .mobile-only.bg-footer {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1000 !important;
+        width: 100% !important;
+        background-color: rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* スマートフォン版ヘッダーレイアウト修正 */
+    .mobile-only.header-gradient {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0.5rem !important;
+        margin: 0.5rem !important;
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+        gap: 1rem !important;
+    }
+    
+    .mobile-only.header-gradient img {
+        height: 2rem !important;
+        width: auto !important;
+        flex-shrink: 0 !important;
+        border-radius: 50% !important;
+        display: block !important;
+    }
+    
+    .mobile-only.header-gradient h1 {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: white !important;
+        text-align: center !important;
+        text-shadow: 0.4vh 0.4vh 0.4vh rgba(0, 0, 0, 0.5) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.2 !important;
+        flex-grow: 0 !important;
+        flex-shrink: 1 !important;
+    }
+    
+    /* スマートフォン版のみ表示 */
+    .mobile-only {
+        display: block;
+    }
+    
+    /* スマホ版フォントサイズ拡大 */
+    .section-title {
+        font-size: 1.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+    .team-rank {
+        font-size: 1.5rem !important;
+    }
+    .team-name {
+        font-size: 1.5rem !important;
+    }
+    .team-total {
+        font-size: 2rem !important;
+    }
+    .player-name {
+        font-size: 1.25rem !important;
+    }
+    .player-score {
+        font-size: 1.25rem !important;
+    }
+    .tab {
+        font-size: 1.25rem !important;
+        padding: 0.75rem 0.5rem !important;
+    }
+    
+    .team-score-badge {
+        height: 1.1em !important;
+        padding: 0.125rem !important;
+    }
+    
+    .font-bold.mb-2.text-sm {
+        margin-top: 0.5rem !important;
+        font-size: 1.3rem !important;
+    }
+    
+    h1 {
+        font-size: 1.5rem !important;
+    }
 }
 
-/* PC版：全画面デジタルサイネージモード */
+/* === レスポンシブ：PC版 === */
 @media (min-width: 1024px) {
     body {
         height: 100vh;
         overflow: hidden;
     }
     
-    .tab-content {
+    /* 3カラムグリッド */
+    .lg-grid {
+        display: grid;
+    }
+    
+    .lg-grid-cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    
+    .lg-gap-2 {
+        gap: 0.5rem;
+    }
+    
+    .lg-h-full {
+        height: 100%;
+    }
+    
+    .lg-overflow-y-auto {
+        overflow-y: auto;
+    }
+    
+    .lg-block {
         display: block !important;
     }
     
-    /* ヘッダー・フッターを非表示 */
+    .lg-text-lg {
+        font-size: 1.125rem !important;
+        line-height: 1.75rem !important;
+    }
+    
+    .lg-text-base {
+        font-size: 1rem !important;
+        line-height: 1.5rem !important;
+    }
+    
+    .lg-text-xs {
+        font-size: 0.75rem !important;
+    }
+    
+    .lg-leading-tight {
+        line-height: 1.25 !important;
+    }
+    
+    .lg-py-1 {
+        padding-top: 0.25rem !important;
+        padding-bottom: 0.25rem !important;
+    }
+    
+    .lg-py-0 {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    .lg-mb-1 {
+        margin-bottom: 0.25rem !important;
+    }
+    
+    .lg-font-black {
+        font-weight: 900 !important;
+    }
+    
+    .lg-text-center {
+        text-align: center !important;
+    }
+    
+    /* モバイル専用要素を非表示 */
     .mobile-only {
         display: none !important;
+    }
+    
+    /* PC版では全タブコンテンツを表示 */
+    .tab-content {
+        display: block !important;
     }
     
     /* 全画面活用 */
@@ -135,6 +831,7 @@ scrollbar-width: none;
         overflow: visible !important;
         display: block !important;
     }
+    
     .accordion-chevron {
         transform: rotate(180deg);
         display: none !important;
@@ -232,63 +929,17 @@ scrollbar-width: none;
     }
 }
 
-/* スマホ版：通常UI */
-@media (max-width: 1023px) {
-    body {
-        min-height: 100vh;
-    }
-    
-    .fullscreen-container {
-        padding: 0.5rem;
-    }
-    
-    .desktop-only {
-        display: none !important;
-    }
-    
-    /* スマホ版フォントサイズ拡大 */
-    .section-title {
-        font-size: 1.5rem !important;
-        margin-bottom: 1rem !important;
-    }
-    .team-rank {
-        font-size: 1.5rem !important;
-    }
-    .team-name {
-        font-size: 1.5rem !important;
-    }
-    .team-total {
-        font-size: 2rem !important;
-    }
-    .player-name {
-        font-size: 1.25rem !important;
-    }
-    .player-score {
-        font-size: 1.25rem !important;
-    }
-    .tab {
-        font-size: 1.25rem !important;
-        padding: 0.75rem 0.5rem !important;
-    }
-    
-    /* スマホ版での種目タイトル拡大 */
-    .team-score-badge {
-        height: 1.1em !important;
-        padding: 0.125rem !important;
-    }
-    
-    /* スマホ版での種目タイトル調整 */
-    .font-bold.mb-2.text-sm {
-        margin-top: 0.5rem !important;
-    }
-    
-    /* スマホ版でのh1サイズ拡大 */
-    h1 {
-        font-size: 1.5rem !important;
-    }
-    
-    /* スマホ版での種目タイトルフォント拡大 */
-    .font-bold.mb-2.text-sm {
-        font-size: 1.3rem !important;
-    }
+/* === テーブル固定レイアウト === */
+.table-fixed {
+    table-layout: fixed !important;
+    width: 100% !important;
+}
+
+/* === グリッド2カラム === */
+.lg-grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.lg-gap-4 {
+    gap: 1rem;
 }
