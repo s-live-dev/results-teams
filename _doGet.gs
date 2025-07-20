@@ -1,5 +1,9 @@
+// テスト用URL
+// https://script.google.com/a/macros/s-live.app/s/AKfycbw30nl9TJx5dt01rZaRlPDszm260hdevMhxZfkj0jCz/dev?s=1aeQHkdd8_9a2WdO5zVo5eXxGyrLezJEJrjbxyUlTkT4
+
 // S-LIVE 団体戦結果システム - Cursor開発環境テスト
 // 最終更新: 2025/07/18 - CSS分離対応
+
 /**
  * WebページとしてアクセスされたときにHTMLを返す
  * @param {object} e - イベントオブジェクト
