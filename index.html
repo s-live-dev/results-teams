@@ -1,103 +1,108 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S-LIVE Results - 団体戦</title>
-    
-    <!-- Font Awesomeの読み込み -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fontsの読み込み -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Ramabhadra&display=swap" rel="stylesheet">
 
-    <!-- CSSファイルのインクルード -->
-    <style>
-        <?!= include('styles'); ?>
-    </style>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S-LIVE Results - 団体戦</title>
+
+  <!-- Font Awesomeの読み込み -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fontsの読み込み -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Ramabhadra&display=swap"
+    rel="stylesheet">
+
+  <!-- CSSファイルのインクルード -->
+  <style>
+    <?!=include('styles');
+    ?>
+  </style>
 </head>
+
 <body class="flex flex-col">
 
-    <!-- ローディング表示 -->
-    <div id="loading-overlay" class="fixed inset-0 bg-overlay flex justify-center items-center z-50">
-        <i class="fa-solid fa-spinner fa-spin text-4xl text-white"></i>
-    </div>
+  <!-- ローディング表示 -->
+  <div id="loading-overlay" class="fixed inset-0 bg-overlay flex justify-center items-center z-50">
+    <i class="fa-solid fa-spinner fa-spin text-4xl text-white"></i>
+  </div>
 
-    <!-- スマホ版のみ：ヘッダー情報 -->
-    <header class="mobile-only header-gradient">
-        <img id="event-flag" src="" alt="Flag" class="hidden">
-        <h1 id="event-name" class="text-center"></h1>
-    </header>
+  <!-- スマホ版のみ：ヘッダー情報 -->
+  <header class="mobile-only header-gradient">
+    <img id="event-flag" src="" alt="Flag" class="hidden">
+    <h1 id="event-name" class="text-center"></h1>
+  </header>
 
-    <div class="fullscreen-container flex-grow">
-        
-        <!-- スマホ版のみ：タブナビゲーション -->
-        <div class="mobile-only mb-2 border-b border-white-20">
-            <nav class="flex flex-wrap" style="margin-bottom: -1px;" aria-label="Tabs">
-                <button onclick="changeTab('team-trap')" class="tab active w-1-3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover-bg-white-10 transition">
+  <div class="fullscreen-container flex-grow">
+
+    <!-- スマホ版のみ：タブナビゲーション -->
+    <div class="mobile-only mb-2 border-b border-white-20">
+      <nav class="flex flex-wrap" style="margin-bottom: -1px;" aria-label="Tabs">
+        <button onclick="changeTab('team-trap')" class="tab active w-1-3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover-bg-white-10 transition">
                     トラップ
                 </button>
-                <button onclick="changeTab('team-skeet')" class="tab w-1-3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover-bg-white-10 transition">
+        <button onclick="changeTab('team-skeet')" class="tab w-1-3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover-bg-white-10 transition">
                     スキート
                 </button>
-                <button onclick="changeTab('team-overall')" class="tab w-1-3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover-bg-white-10 transition">
+        <button onclick="changeTab('team-overall')" class="tab w-1-3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover-bg-white-10 transition">
                     総合成績
                 </button>
-            </nav>
-        </div>
-
-        <!-- コンテンツエリア -->
-        <main class="pb-2 lg-pb-0 lg-h-full">
-            <!-- スマホ：タブ切り替え / PC：3カラム全画面表示 -->
-            <div class="lg-grid lg-grid-cols-3 lg-gap-2 lg-h-full">
-                
-                <!-- 左カラム：トラップ種目団体セクション -->
-                <div id="team-trap" class="tab-content lg-block lg-h-full lg-overflow-y-auto">
-                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #c855e3;text-align: center;">
-                        <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="event-badge-img event-badge-trap inline">トラップ種目 団体
-                    </h2>
-                    <div id="team-trap-event" class="space-y-1"></div>
-                </div>
-
-                <!-- 中央カラム：スキート種目団体セクション -->
-                <div id="team-skeet" class="tab-content hidden lg-block lg-h-full lg-overflow-y-auto">
-                    <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #eebf35;text-align: center;">
-                        <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="event-badge-img event-badge-skeet inline">スキート種目 団体
-                    </h2>
-                    <div id="team-skeet-event" class="space-y-1"></div>
-                </div>
-
-                <!-- 右カラム：総合団体セクション -->
-                <div id="team-overall" class="tab-content hidden lg-block lg-h-full lg-overflow-y-auto">
-                    <h2 class="section-title desktop-only text-lg font-bold mb-1 text-green-400" style="text-align: center;">
-                      <img src="https://s-live.org/wp-content/plugins/s-live/resource/TEAM.png" class="event-badge-img event-badge-team inline">総合成績 団体
-                    </h2>
-                    <div id="team-overall-results" class="space-y-1"></div>
-                </div>
-                
-            </div>
-        </main>
+      </nav>
     </div>
 
-    <!-- スマホ版のみ：フッター -->
-    <footer class="mobile-only bg-footer p-1 fixed bottom-0 left-0 right-0 text-white-80">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <div class="text-left">
-                    <div id="event-place" class="text-sm font-bold"></div>
-                    <div id="event-weather" class="text-xs"></div>
-                </div>
-            </div>
-            <div class="flex items-center">
-                <img id="qr-code" src="" class="h-12 w-12 bg-white p-0-5">
-            </div>
-        </div>
-    </footer>
+    <!-- コンテンツエリア -->
+    <main class="pb-2 lg-pb-0 lg-h-full">
+      <!-- スマホ：タブ切り替え / PC：3カラム全画面表示 -->
+      <div class="lg-grid lg-grid-cols-3 lg-gap-2 lg-h-full">
 
-    <script>
-        // スコアカラーリング関数 - インラインスタイルで確実に適用
+        <!-- 左カラム：トラップ種目団体セクション -->
+        <div id="team-trap" class="tab-content lg-block lg-h-full lg-overflow-y-auto">
+          <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #c855e3;text-align: center;">
+            <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="event-badge-img event-badge-trap inline">トラップ種目 団体
+          </h2>
+          <div id="team-trap-event" class="space-y-1"></div>
+        </div>
+
+        <!-- 中央カラム：スキート種目団体セクション -->
+        <div id="team-skeet" class="tab-content hidden lg-block lg-h-full lg-overflow-y-auto">
+          <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #eebf35;text-align: center;">
+            <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="event-badge-img event-badge-skeet inline">スキート種目 団体
+          </h2>
+          <div id="team-skeet-event" class="space-y-1"></div>
+        </div>
+
+        <!-- 右カラム：総合団体セクション -->
+        <div id="team-overall" class="tab-content hidden lg-block lg-h-full lg-overflow-y-auto">
+          <h2 class="section-title desktop-only text-lg font-bold mb-1 text-green-400" style="text-align: center;">
+            <img src="https://s-live.org/wp-content/plugins/s-live/resource/TEAM.png" class="event-badge-img event-badge-team inline">総合成績 団体
+          </h2>
+          <div id="team-overall-results" class="space-y-1"></div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- スマホ版のみ：フッター -->
+  <footer class="mobile-only bg-footer p-1 fixed bottom-0 left-0 right-0 text-white-80">
+    <div class="container mx-auto flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <div class="text-left">
+          <div id="event-place" class="text-sm font-bold"></div>
+          <div id="event-weather" class="text-xs"></div>
+        </div>
+      </div>
+      <div class="flex items-center">
+        <img id="qr-code" src="" class="h-12 w-12 bg-white p-0-5">
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // スコアカラーリング関数 - インラインスタイルで確実に適用
         function getScoreStyle(score) {
             switch (score) {
                 case 23: return 'color: RGB(101, 255, 255) !important;';
@@ -175,16 +180,24 @@ container.innerHTML = data.map((team) => `
             }
             container.innerHTML = data.map(team => `
                 <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
-                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
-                        <div class="flex items-center justify-center">
-                            <span class="team-rank w-8 text-left text-lg lg-text-base" style="color: #F3F4F6 !important;">${team.rank}</span>
-                            <span class="team-name flex-1 pr-4 text-center lg-text-base" style="color: #F3F4F6 !important;">${team.name}</span>
-                        </div>
-                        <div class="flex items-center justify-center">
-                            <span class="team-total text-xl lg-text-lg mr-0" style="${getTotalScoreStyle(team.overallTotal, '#4ade80')}">${team.overallTotal}</span>
-                            <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300" style="margin-left: 0.5rem; color: #F3F4F6 !important;"></i>
-                        </div>
-                    </button>
+<button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
+    <div class="flex items-center justify-center">
+        <span class="team-rank w-8 text-left text-lg lg-text-base">${team.rank}</span>
+        <span class="team-name flex-1 pr-4 text-center lg-text-base">${team.name}</span>
+    </div>
+    <div class="flex items-baseline justify-end team-total-container">
+        <div class="team-total-breakdown">
+            <span style="color: #c855e3 !important;">${team.trapTotal}</span>
+            <span class="total-separator"> + </span>
+            <span style="color: #eebf35 !important;">${team.skeetTotal}</span>
+            <span class="total-separator">:</span>
+        </div>
+        <span class="team-total-overall" style="${getTotalScoreStyle(team.overallTotal, '#4ade80')}">
+            ${team.overallTotal}
+        </span>
+        <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300"></i>
+    </div>
+</button>
                     <div class="accordion-content">
                         <div class="px-6">
                             <div class="lg-grid lg-grid-cols-2 lg-gap-4">
@@ -376,6 +389,7 @@ container.innerHTML = data.map((team) => `
         // リサイズイベントリスナー
         window.addEventListener('resize', handleResize);
 
-    </script>
+  </script>
 </body>
+
 </html>
