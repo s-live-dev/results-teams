@@ -1,0 +1,22 @@
+# Google Workspace開発環境
+.clasp.json
+node_modules/
+
+# IDE設定
+.vscode/launch.json
+.idea/
+*.swp
+*.swo
+
+# OS ファイル
+.DS_Store
+Thumbs.db
+
+# 一時ファイル
+*.tmp
+*.temp
+*.log
+
+# Google Drive 同期除外
+.gdrive_sync
+~$*
