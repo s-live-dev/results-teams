@@ -652,7 +652,7 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
     .w-12 { width: 4.8vh; }
     .h-8 { height: 3.2vh; }
     .h-12 { height: 4.8vh; }
-    .min-w-300 { min-width: 48vh; }
+    .min-w-300 { min-width: 32vh; }
     
     /* スペーシング */
     .space-x-2 > * + * { margin-left: 0.8vh; }
@@ -908,5 +908,36 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
 #team-skeet-event > .bg-card,
 #team-overall-results > .bg-card {
     flex-grow: 1;
+}
+/* PC版: 入れ子にしたdivが原因のレイアウト崩れを防止 */
+.accordion-content .px-6 {
+    min-width: 100%;
+}
+/* PC版: トラップ・スキート種目の合計点を右揃えにする */
+#team-trap-event .team-total,
+#team-skeet-event .team-total {
+    margin-left: auto; /* 合計点を右に寄せる */
+}
+
+/* PC版: トラップ・スキート種目の選手別合計点を右揃えにする */
+#team-trap-event td:last-child,
+#team-skeet-event td:last-child {
+    text-align: right !important;
+}
+/*
+  PC版: テーブルコンテナにvw単位で幅を指定し、中央に配置する
+  - これにより、テーブルは常に安定した幅を基準に列幅を計算でき、間延びを防ぐ
+*/
+#team-trap-event .overflow-x-auto,
+#team-skeet-event .overflow-x-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* PC版: 合計点の右揃えと、文字切れ防止のパディングを維持 */
+#team-trap-event td:last-child,
+#team-skeet-event td:last-child {
+    text-align: right !important;
+    padding-right: 0.0vw !important;
 }
 }
