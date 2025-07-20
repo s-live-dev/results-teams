@@ -193,32 +193,25 @@
                                         <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="team-score-badge trap inline">
                                         トラップ: <span style="${getTotalScoreStyle(team.trapTotal, '#c855e3')}">${team.trapTotal}点</span>
                                     </h4>
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full text-sm min-w-300 table-fixed">
-                                            <colgroup>
-                                                <col style="width: 7% !important;">   <!-- 順位 -->
-                                                <col style="width: 40% !important;">  <!-- 選手名 -->
-                                                <col style="width: 8% !important;">   <!-- R1 -->
-                                                <col style="width: 8% !important;">   <!-- R2 -->
-                                                <col style="width: 8% !important;">   <!-- R3 -->
-                                                <col style="width: 8% !important;">   <!-- R4 -->
-                                                <col style="width: 13% !important;">  <!-- 合計 -->
-                                            </colgroup>
-                                            <tbody class="divide-y">
-                                                ${team.trapPlayers.map(p => `
-                                                    <tr style="color: #F3F4F6 !important;">
-                                                        <td class="py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="font-size: 0.75em; color: #F3F4F6 !important;">${p.rank}</td>
-                                                        <td class="py-0-5 lg-py-0 pl-0 player-name lg-text-xs lg-leading-tight" style="font-size: 0.75em; color: #F3F4F6 !important;">${p.name}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r1)} font-size: 0.75em;">${p.r1}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r2)} font-size: 0.75em;">${p.r2}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)} font-size: 0.75em;">${p.r3}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)} font-size: 0.75em;">${p.r4}</td>
-                                                        <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight" style="${getTotalScoreStyle(p.total, '#c855e3')} font-size: 0.75em;">${p.total}</td>
-                                                    </tr>
-                                                `).join('')}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-sm table-fixed">
+                                        <colgroup>
+                                            <col style="width: 12% !important;">  <col style="width: 43% !important;">  <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 13% !important;">  </colgroup>
+                                        <tbody class="divide-y">
+                                            ${team.trapPlayers.map(p => `
+                                                <tr style="color: #F3F4F6 !important;">
+                                                    <td class="py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.rank}</td>
+                                                    <td class="py-0-5 lg-py-0 pl-0 player-name lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.name}</td>
+                                                    <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r1)}">${p.r1}</td>
+                                                    <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r2)}">${p.r2}</td>
+                                                    <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)}">${p.r3}</td>
+                                                    <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)}">${p.r4}</td>
+                                                    <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight" style="${getTotalScoreStyle(p.total, '#c855e3')}">${p.total}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
                                 </div>
                                 <div>
                                     <h4 class="font-bold mb-2 lg-mb-1 text-sm lg-font-black" style="color: #eebf35;">
@@ -226,26 +219,19 @@
                                         スキート: <span style="${getTotalScoreStyle(team.skeetTotal, '#eebf35')}">${team.skeetTotal}点</span>
                                     </h4>
                                     <div class="overflow-x-auto">
-                                        <table class="w-full text-sm min-w-300 table-fixed">
+                                        <table class="w-full text-sm table-fixed">
                                             <colgroup>
-                                                <col style="width: 7% !important;">   <!-- 順位 -->
-                                                <col style="width: 40% !important;">  <!-- 選手名 -->
-                                                <col style="width: 8% !important;">   <!-- R1 -->
-                                                <col style="width: 8% !important;">   <!-- R2 -->
-                                                <col style="width: 8% !important;">   <!-- R3 -->
-                                                <col style="width: 8% !important;">   <!-- R4 -->
-                                                <col style="width: 13% !important;">  <!-- 合計 -->
-                                            </colgroup>
+                                                <col style="width: 12% !important;">  <col style="width: 43% !important;">  <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 13% !important;">  </colgroup>
                                             <tbody class="divide-y">
-                                                ${team.skeetPlayers.map(p => `
+                                                ${team.trapPlayers.map(p => `
                                                     <tr style="color: #F3F4F6 !important;">
-                                                        <td class="py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="font-size: 0.75em; color: #F3F4F6 !important;">${p.rank}</td>
-                                                        <td class="py-0-5 lg-py-0 pl-0 player-name lg-text-xs lg-leading-tight" style="font-size: 0.75em; color: #F3F4F6 !important;">${p.name}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r1)} font-size: 0.75em;">${p.r1}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r2)} font-size: 0.75em;">${p.r2}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)} font-size: 0.75em;">${p.r3}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)} font-size: 0.75em;">${p.r4}</td>
-                                                        <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight" style="${getTotalScoreStyle(p.total, '#eebf35')} font-size: 0.75em;">${p.total}</td>
+                                                        <td class="py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.rank}</td>
+                                                        <td class="py-0-5 lg-py-0 pl-0 player-name lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.name}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r1)}">${p.r1}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r2)}">${p.r2}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)}">${p.r3}</td>
+                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)}">${p.r4}</td>
+                                                        <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight" style="${getTotalScoreStyle(p.total, '#c855e3')}">${p.total}</td>
                                                     </tr>
                                                 `).join('')}
                                             </tbody>

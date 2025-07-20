@@ -714,7 +714,8 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
         padding-left: 0.2vh !important;
         padding-right: 0.2vh !important;
     }
-    .section-title { font-size: 2.4vh !important; margin-bottom: 0.8vh !important; }
+
+    .section-title { font-size: 2.4vh !important; margin-top: 0; margin-bottom: 0.8vh !important; }
     
     /* PC版でのテーブル列幅の強制設定 */
     .player-score:last-child {
@@ -800,4 +801,13 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
         padding-left: 1.6vh !important;
         padding-right: 1.6vh !important;
     }
+
+    /* PC版: 総合成績の2カラムレイアウト内のテーブル幅を再定義 */
+    #team-overall table colgroup col:nth-child(1) { width: 13% !important; }
+    #team-overall table colgroup col:nth-child(2) { width: 40% !important; }
+    #team-overall table colgroup col:nth-child(3),
+    #team-overall table colgroup col:nth-child(4),
+    #team-overall table colgroup col:nth-child(5),
+    #team-overall table colgroup col:nth-child(6) { width: 8% !important; }
+    #team-overall table colgroup col:nth-child(7) { width: 15% !important; }
 }
