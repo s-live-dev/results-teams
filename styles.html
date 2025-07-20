@@ -381,7 +381,7 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
 /* アコーディオン内容の色強制 - ハイスコア除外 */
 .accordion-content:not(.hl23):not(.hl24):not(.hl25),
 .accordion-content *:not(.hl23):not(.hl24):not(.hl25) {
-    color: inherit !important;
+    <!-- color: inherit !important; -->
 }
 
 /* === スクロールバー非表示 === */
@@ -810,4 +810,34 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
     #team-overall table colgroup col:nth-child(5),
     #team-overall table colgroup col:nth-child(6) { width: 8% !important; }
     #team-overall table colgroup col:nth-child(7) { width: 15% !important; }
+
+/* === 総合成績セクション内の選手テーブル専用スタイル (PC) === */
+
+/* 「トラップ:」「スキート:」ヘッダーのフォントと下余白を調整 */
+#team-overall .accordion-content h4 {
+    font-size: 1.5vh !important;
+    margin-bottom: 0.4vh !important;
+}
+
+/* 選手テーブルのセルの上下余白を詰めて行の高さを縮小 */
+#team-overall .accordion-content td {
+    padding-top: 0.1vh !important;
+    padding-bottom: 0.1vh !important;
+    line-height: 1.0 !important;
+}
+
+/* 選手テーブルのフォントサイズを調整 */
+#team-overall .accordion-content .lg-text-xs {
+    font-size: 1.15vh !important;
+}
+
+/* PC版: 総合成績チーム名ヘッダーの余白を削除し、垂直中央揃えを維持 */
+#team-overall .bg-card > button {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: 3.5vh; /* 中央揃えを機能させるための最小高さを確保 */
+}
+/* PC版: 総合成績セクション、ヘッダー下の見出し(h4)が持つ不要な上マージンを削除 */
+#team-overall .accordion-content h4 { margin-top: 0 !important; }
+
 }

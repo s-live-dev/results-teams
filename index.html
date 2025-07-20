@@ -123,18 +123,18 @@
                 container.innerHTML = '<p class="text-gray-400 text-center p-4">データがありません。</p>';
                 return;
             }
-            container.innerHTML = data.map((team) => `
-                <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
-                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 text-left font-bold" style="color: #F3F4F6 !important;">
-                        <div class="flex items-center justify-center">
-                            <span class="team-rank w-8 text-left text-lg" style="color: #F3F4F6 !important;">${team.rank}</span>
-                            <span class="team-name flex-1 pr-4 text-center" style="color: #F3F4F6 !important;">${team.name}</span>
-                        </div>
-                        <div class="flex items-center justify-center">
-                            <span class="team-total text-xl mr-0" style="${getTotalScoreStyle(team.total, color)}">${team.total}</span>
-                            <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300" style="margin-left: 0.5rem; color: #F3F4F6 !important;"></i>
-                        </div>
-                    </button>
+container.innerHTML = data.map((team) => `
+    <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
+        <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
+            <div class="flex items-center justify-center">
+                <span class="team-rank w-8 text-left text-lg lg-text-base" style="color: #F3F4F6 !important;">${team.rank}</span>
+                <span class="team-name flex-1 pr-4 text-center lg-text-base" style="color: #F3F4F6 !important;">${team.name}</span>
+            </div>
+            <div class="flex items-center justify-center">
+                <span class="team-total text-xl lg-text-lg mr-0" style="${getTotalScoreStyle(team.total, color)}">${team.total}</span>
+                <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300" style="margin-left: 0.5rem; color: #F3F4F6 !important;"></i>
+            </div>
+        </button>
                     <div class="accordion-content">
                         <div class="px-6 overflow-x-auto">
                             <table class="w-full text-sm min-w-300 table-fixed">
