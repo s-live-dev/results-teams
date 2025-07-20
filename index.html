@@ -4,19 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>S-LIVE Results - 団体戦</title>
+  <title>S-LIVE Results - Team</title>
 
-  <!-- Font Awesomeの読み込み -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Google Fontsの読み込み -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Ramabhadra&display=swap"
+    href="https://fonts.googleapis.com/css2?family=BIZ+UDGothic:wght@400;700&family=Noto+Sans+JP:wght@400;700&family=Ramabhadra&family=Arial:wght@400;700&display=swap"
     rel="stylesheet">
 
-  <!-- CSSファイルのインクルード -->
   <style>
     <?!=include('styles');
     ?>
@@ -25,12 +22,10 @@
 
 <body class="flex flex-col">
 
-  <!-- ローディング表示 -->
   <div id="loading-overlay" class="fixed inset-0 bg-overlay flex justify-center items-center z-50">
     <i class="fa-solid fa-spinner fa-spin text-4xl text-white"></i>
   </div>
 
-  <!-- スマホ版のみ：ヘッダー情報 -->
   <header class="mobile-only header-gradient">
     <img id="event-flag" src="" alt="Flag" class="hidden">
     <h1 id="event-name" class="text-center"></h1>
@@ -38,7 +33,6 @@
 
   <div class="fullscreen-container flex-grow">
 
-    <!-- スマホ版のみ：タブナビゲーション -->
     <div class="mobile-only mb-2 border-b border-white-20">
       <nav class="flex flex-wrap" style="margin-bottom: -1px;" aria-label="Tabs">
         <button onclick="changeTab('team-trap')" class="tab active w-1-3 text-center py-2 px-1 border-b-2 border-transparent font-medium text-xs hover-bg-white-10 transition">
@@ -53,12 +47,9 @@
       </nav>
     </div>
 
-    <!-- コンテンツエリア -->
     <main class="pb-2 lg-pb-0 lg-h-full">
-      <!-- スマホ：タブ切り替え / PC：3カラム全画面表示 -->
       <div class="lg-grid lg-grid-cols-3 lg-gap-2 lg-h-full">
 
-        <!-- 左カラム：トラップ種目団体セクション -->
         <div id="team-trap" class="tab-content lg-block lg-h-full lg-overflow-y-auto">
           <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #c855e3;text-align: center;">
             <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="event-badge-img event-badge-trap inline">トラップ種目 団体
@@ -66,7 +57,6 @@
           <div id="team-trap-event" class="space-y-1"></div>
         </div>
 
-        <!-- 中央カラム：スキート種目団体セクション -->
         <div id="team-skeet" class="tab-content hidden lg-block lg-h-full lg-overflow-y-auto">
           <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #eebf35;text-align: center;">
             <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="event-badge-img event-badge-skeet inline">スキート種目 団体
@@ -74,7 +64,6 @@
           <div id="team-skeet-event" class="space-y-1"></div>
         </div>
 
-        <!-- 右カラム：総合団体セクション -->
         <div id="team-overall" class="tab-content hidden lg-block lg-h-full lg-overflow-y-auto">
           <h2 class="section-title desktop-only text-lg font-bold mb-1 text-green-400" style="text-align: center;">
             <img src="https://s-live.org/wp-content/plugins/s-live/resource/TEAM.png" class="event-badge-img event-badge-team inline">総合成績 団体
@@ -86,7 +75,6 @@
     </main>
   </div>
 
-  <!-- スマホ版のみ：フッター -->
   <footer class="mobile-only bg-footer p-1 fixed bottom-0 left-0 right-0 text-white-80">
     <div class="container mx-auto flex justify-between items-center">
       <div class="flex items-center space-x-2">
@@ -101,111 +89,123 @@
     </div>
   </footer>
 
-  <script>
+<script>
     // スコアカラーリング関数 - インラインスタイルで確実に適用
-        function getScoreStyle(score) {
-            switch (score) {
-                case 23: return 'color: RGB(101, 255, 255) !important;';
-                case 24: return 'color: RGB(255, 153, 229) !important; text-decoration: underline solid !important;';
-                case 25: return 'color: RGB(255, 255, 101) !important; text-decoration: underline double !important;';
-                default: return 'color: #F3F4F6 !important;';
-            }
+    function getScoreStyle(score) {
+        switch (score) {
+            case 23: return 'color: RGB(101, 255, 255) !important;';
+            case 24: return 'color: RGB(255, 153, 229) !important; text-decoration: underline solid !important;';
+            case 25: return 'color: RGB(255, 255, 101) !important; text-decoration: underline double !important;';
+            default: return 'color: #F3F4F6 !important;';
         }
-        
-        // 合計スコア用のカラーリング関数
-        function getTotalScoreStyle(score, defaultColor) {
-            switch (score) {
-                case 23: return 'color: RGB(101, 255, 255) !important;';
-                case 24: return 'color: RGB(255, 153, 229) !important; text-decoration: underline solid !important;';
-                case 25: return 'color: RGB(255, 255, 101) !important; text-decoration: underline double !important;';
-                default: return `color: ${defaultColor} !important;`;
-            }
+    }
+    
+    // 合計スコア用のカラーリング関数
+    function getTotalScoreStyle(score, defaultColor) {
+        switch (score) {
+            case 23: return 'color: RGB(101, 255, 255) !important;';
+            case 24: return 'color: RGB(255, 153, 229) !important; text-decoration: underline solid !important;';
+            case 25: return 'color: RGB(255, 255, 101) !important; text-decoration: underline double !important;';
+            default: return `color: ${defaultColor} !important;`;
         }
-        
-function renderTeamEvent(data, targetId, color) {
-    const container = document.getElementById(targetId);
-    if (!data || data.length === 0) {
-        container.innerHTML = '<p class="text-gray-400 text-center p-4">データがありません。</p>';
-        return;
     }
 
-    container.innerHTML = data.map((team) => `
-        <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
-            <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
-                <div class="flex items-center justify-center">
-                    <span class="team-rank w-8 text-left text-lg lg-text-base" style="color: #F3F4F6 !important;">${team.rank}</span>
-                    <span class="team-name flex-1 pr-4 text-center lg-text-base" style="color: #F3F4F6 !important;">${team.name}</span>
+    // チーム名からアイコンURLを取得する関数
+    function getTeamIconUrl(teamName) {
+        const baseUrl = "https://s-live.org/wp-content/plugins/s-live/resource/flag/";
+        return `${baseUrl}${teamName}.png`; 
+    }
+
+    // ★ 修正：アコーディオン機能を無効にし、常に開いた状態にする
+    function renderTeamEvent(data, targetId, color) {
+        const container = document.getElementById(targetId);
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p class="text-gray-400 text-center p-4">データがありません。</p>';
+            return;
+        }
+
+        container.innerHTML = data.map((team) => `
+            <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
+                <div class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
+                    <div class="flex items-center justify-center">
+                        <span class="team-rank w-8 text-left text-lg lg-text-base" style="color: #F3F4F6 !important;">${team.rank}</span>
+                        <img src="${getTeamIconUrl(team.name)}" alt="${team.name} icon" class="team-icon-style">
+                        <span class="team-name flex-1 pr-4 text-center lg-text-base" style="color: #F3F4F6 !important;">${team.name}</span>
+                    </div>
+                    <div class="flex items-center justify-center">
+                        <span class="team-total text-xl lg-text-lg mr-0" style="${getTotalScoreStyle(team.total, color)}">${team.total}</span>
+                    </div>
                 </div>
-                <div class="flex items-center justify-center">
-                    <span class="team-total text-xl lg-text-lg mr-0" style="${getTotalScoreStyle(team.total, color)}">${team.total}</span>
-                    <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300" style="margin-left: 0.5rem; color: #F3F4F6 !important;"></i>
-                </div>
-            </button>
-            <div class="accordion-content">
-                <div class="px-6">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm min-w-300 table-fixed">
-                            <colgroup>
-                                <col style="width: 7% !important;">   <col style="width: 40% !important;">  <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 13% !important;">
+
+                <div class="pb-2">
+                    <div class="px-6">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm min-w-300 table-fixed">
+                                <colgroup>
+                                    <col style="width: 7% !important;">   <col style="width: 40% !important;">  <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 13% !important;">
                                 </colgroup>
-                            <tbody class="divide-y">
-                                ${team.players.map(p => `
-                                    <tr style="color: #F3F4F6 !important;">
-                                        <td class="py-0-5 player-score" style="color: #F3F4F6 !important;">${p.rank}</td>
-                                        <td class="py-0-5 pl-0 player-name" style="color: #F3F4F6 !important;">${p.name}</td>
-                                        <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r1)}">${p.r1}</td>
-                                        <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r2)}">${p.r2}</td>
-                                        <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r3)}">${p.r3}</td>
-                                        <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r4)}">${p.r4}</td>
-                                        <td class="text-right lg-text-center py-0-5 pr-0 font-bold player-score" style="${getTotalScoreStyle(p.total, color)}">${p.total}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
+                                <tbody class="divide-y">
+                                    ${team.players.map(p => `
+                                        <tr style="color: #F3F4F6 !important;">
+                                            <td class="py-0-5 player-score" style="color: #F3F4F6 !important;">${p.rank}</td>
+                                            <td class="py-0-5 pl-0 player-name" style="color: #F3F4F6 !important;">${p.name}</td>
+                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r1)}">${p.r1}</td>
+                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r2)}">${p.r2}</td>
+                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r3)}">${p.r3}</td>
+                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r4)}">${p.r4}</td>
+                                            <td class="text-right lg-text-center py-0-5 pr-0 font-bold player-score" style="${getTotalScoreStyle(p.total, color)}">${p.total}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `).join('');
-}
-        function renderTeamOverall(data, targetId) {
-            const container = document.getElementById(targetId);
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 text-center p-4">データがありません。</p>';
-                return;
-            }
-            container.innerHTML = data.map(team => `
-                <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
-<button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
-    <div class="flex items-center justify-center">
-        <span class="team-rank w-8 text-left text-lg lg-text-base">${team.rank}</span>
-        <span class="team-name flex-1 pr-4 text-center lg-text-base">${team.name}</span>
-    </div>
-<div class="flex items-center justify-end team-total-container">
-        <div class="team-total-breakdown">
-            <span style="color: #c855e3 !important;">${team.trapTotal}</span>
-            <span class="total-separator"> + </span>
-            <span style="color: #eebf35 !important;">${team.skeetTotal}</span>
-            <span class="total-separator">:</span>
-        </div>
-        <span class="team-total-overall" style="${getTotalScoreStyle(team.overallTotal, '#4ade80')}">
-            ${team.overallTotal}
-        </span>
-        <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300"></i>
-    </div>
-</button>
-                    <div class="accordion-content">
-                        <div class="px-6">
-                            <div class="lg-grid lg-grid-cols-2 lg-gap-4">
-                                <div class="mb-4 lg-mb-1">
-                                    <h4 class="font-bold mb-2 lg-mb-1 text-sm lg-font-black" style="color: #c855e3;">
-                                        <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="team-score-badge trap inline">
-                                        トラップ: <span style="${getTotalScoreStyle(team.trapTotal, '#c855e3')}">${team.trapTotal}点</span>
-                                    </h4>
+        `).join('');
+    }
+
+    // 総合成績はアコーディオンとして維持するため、この関数は変更なし
+    function renderTeamOverall(data, targetId) {
+        const container = document.getElementById(targetId);
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p class="text-gray-400 text-center p-4">データがありません。</p>';
+            return;
+        }
+        container.innerHTML = data.map(team => `
+            <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
+                <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
+                    <div class="flex items-center justify-center">
+                        <span class="team-rank w-8 text-left text-lg lg-text-base">${team.rank}</span>
+                        <img src="${getTeamIconUrl(team.name)}" alt="${team.name} icon" class="team-icon-style">
+                        <span class="team-name flex-1 pr-4 text-center lg-text-base">${team.name}</span>
+                    </div>
+                    <div class="flex items-center justify-end team-total-container">
+                        <div class="team-total-breakdown">
+                            <span style="color: #c855e3 !important;">${team.trapTotal}</span>
+                            <span class="total-separator"> + </span>
+                            <span style="color: #eebf35 !important;">${team.skeetTotal}</span>
+                            <span class="total-separator">:</span>
+                        </div>
+                        <span class="team-total-overall" style="${getTotalScoreStyle(team.overallTotal, '#4ade80')}">
+                            ${team.overallTotal}
+                        </span>
+                        <i class="fa-solid fa-chevron-down accordion-chevron transition-transform duration-300"></i>
+                    </div>
+                </button>
+                <div class="accordion-content">
+                    <div class="px-6">
+                        <div class="lg-grid lg-grid-cols-2 lg-gap-4">
+                            <div class="mb-4 lg-mb-1">
+                                <h4 class="font-bold mb-2 lg-mb-1 text-sm lg-font-black" style="color: #c855e3;">
+                                    <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="team-score-badge trap inline">
+                                    トラップ: <span style="${getTotalScoreStyle(team.trapTotal, '#c855e3')}">${team.trapTotal}点</span>
+                                </h4>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-sm table-fixed">
                                         <colgroup>
-                                            <col style="width: 12% !important;">  <col style="width: 43% !important;">  <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 13% !important;">  </colgroup>
+                                            <col style="width: 12% !important;">  <col style="width: 43% !important;">  <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 13% !important;">
+                                        </colgroup>
                                         <tbody class="divide-y">
                                             ${team.trapPlayers.map(p => `
                                                 <tr style="color: #F3F4F6 !important;">
@@ -221,171 +221,150 @@ function renderTeamEvent(data, targetId, color) {
                                         </tbody>
                                     </table>
                                 </div>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold mb-2 lg-mb-1 text-sm lg-font-black" style="color: #eebf35;">
-                                        <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="team-score-badge skeet inline">
-                                        スキート: <span style="${getTotalScoreStyle(team.skeetTotal, '#eebf35')}">${team.skeetTotal}点</span>
-                                    </h4>
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full text-sm table-fixed">
-                                            <colgroup>
-                                                <col style="width: 12% !important;">  <col style="width: 43% !important;">  <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 13% !important;">  </colgroup>
-                                            <tbody class="divide-y">
-                                                ${team.skeetPlayers.map(p => `
-                                                    <tr style="color: #F3F4F6 !important;">
-                                                        <td class="py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.rank}</td>
-                                                        <td class="py-0-5 lg-py-0 pl-0 player-name lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.name}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r1)}">${p.r1}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r2)}">${p.r2}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)}">${p.r3}</td>
-                                                        <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)}">${p.r4}</td>
-                                                        <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight" style="${getTotalScoreStyle(p.total, '#eebf35')}">${p.total}</td>
-                                                    </tr>
-                                                `).join('')}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-2 lg-mb-1 text-sm lg-font-black" style="color: #eebf35;">
+                                    <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="team-score-badge skeet inline">
+                                    スキート: <span style="${getTotalScoreStyle(team.skeetTotal, '#eebf35')}">${team.skeetTotal}点</span>
+                                </h4>
+                                <div class="overflow-x-auto">
+                                    <table class="w-full text-sm table-fixed">
+                                        <colgroup>
+                                            <col style="width: 12% !important;">  <col style="width: 43% !important;">  <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 13% !important;">
+                                        </colgroup>
+                                        <tbody class="divide-y">
+                                            ${team.skeetPlayers.map(p => `
+                                                <tr style="color: #F3F4F6 !important;">
+                                                    <td class="py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.rank}</td>
+                                                    <td class="py-0-5 lg-py-0 pl-0 player-name lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.name}</td>
+                                                    <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r1)}">${p.r1}</td>
+                                                    <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r2)}">${p.r2}</td>
+                                                    <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)}">${p.r3}</td>
+                                                    <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)}">${p.r4}</td>
+                                                    <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight" style="${getTotalScoreStyle(p.total, '#eebf35')}">${p.total}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            `).join('');
-        }
-        
-        function renderHeaderAndFooter(info) {
-            if (!info) return;
-            
-            // スマホ版のみ更新
-            const eventName = document.getElementById('event-name');
-            if (eventName) eventName.textContent = info.name;
-            
-            if (info.flagUrl) {
-                const flagImg = document.getElementById('event-flag');
-                if (flagImg) {
-                    flagImg.src = info.flagUrl;
-                    flagImg.classList.remove('hidden');
-                }
+            </div>
+        `).join('');
+    }
+
+    function renderHeaderAndFooter(info) {
+        if (!info) return;
+        const eventName = document.getElementById('event-name');
+        if (eventName) eventName.textContent = info.name;
+        if (info.flagUrl) {
+            const flagImg = document.getElementById('event-flag');
+            if (flagImg) {
+                flagImg.src = info.flagUrl;
+                flagImg.classList.remove('hidden');
             }
-            
-            const eventPlace = document.getElementById('event-place');
-            if (eventPlace) eventPlace.textContent = info.place;
-            
-            const eventWeather = document.getElementById('event-weather');
-            if (eventWeather) eventWeather.innerHTML = info.weather;
-            
-            const qrCode = document.getElementById('qr-code');
-            if (qrCode) qrCode.src = info.qrCodeUrl;
         }
+        const eventPlace = document.getElementById('event-place');
+        if (eventPlace) eventPlace.textContent = info.place;
+        const eventWeather = document.getElementById('event-weather');
+        if (eventWeather) eventWeather.innerHTML = info.weather;
+        const qrCode = document.getElementById('qr-code');
+        if (qrCode) qrCode.src = info.qrCodeUrl;
+    }
 
-        // --- イベントハンドラ ---
-        function changeTab(tabName) {
-            // PC表示では何もしない（3カラム常時表示）
-            if (window.innerWidth >= 1024) return;
-            
-            // スマホ表示のみタブ切り替え
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabName).classList.remove('hidden');
-            document.querySelector(`button[onclick="changeTab('${tabName}')"]`).classList.add('active');
+    // --- イベントハンドラ ---
+    function changeTab(tabName) {
+        if (window.innerWidth >= 1024) return;
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(tabName).classList.remove('hidden');
+        document.querySelector(`button[onclick="changeTab('${tabName}')"]`).classList.add('active');
+    }
+
+    // 総合成績タブでのみ使用される
+    function toggleAccordion(buttonElement) {
+        if (window.innerWidth >= 1024) return;
+        const content = buttonElement.nextElementSibling;
+        const icon = buttonElement.querySelector('i');
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+            icon.classList.remove('rotate-180');
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.classList.add('rotate-180');
         }
-
-        function toggleAccordion(buttonElement) {
-            // PC表示では何もしない（常に開いた状態）
-            if (window.innerWidth >= 1024) return;
-            
-            const content = buttonElement.nextElementSibling;
-            const icon = buttonElement.querySelector('i');
-            if (content.style.maxHeight) {
-                content.style.maxHeight = null;
-                icon.classList.remove('rotate-180');
-            } else {
-                content.style.maxHeight = content.scrollHeight + "px";
+    }
+    
+    function handleResize() {
+        if (window.innerWidth >= 1024) {
+            document.getElementById('team-trap').classList.remove('hidden');
+            document.getElementById('team-skeet').classList.remove('hidden');
+            document.getElementById('team-overall').classList.remove('hidden');
+            document.querySelectorAll('.accordion-content').forEach(content => {
+                content.style.maxHeight = 'none';
+            });
+            document.querySelectorAll('.accordion-chevron').forEach(icon => {
                 icon.classList.add('rotate-180');
+            });
+        } else {
+            const activeTab = document.querySelector('.tab.active');
+            if (activeTab) {
+                const tabName = activeTab.getAttribute('onclick').match(/'([^']+)'/)[1];
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(tabName).classList.remove('hidden');
             }
+            // アコーディオンの初期状態をリセット（総合成績のみが対象になる）
+            document.querySelectorAll('.accordion-content').forEach(content => {
+                content.style.maxHeight = null;
+            });
+            document.querySelectorAll('.accordion-chevron').forEach(icon => {
+                icon.classList.remove('rotate-180');
+            });
         }
-        
-        function updateClock() {
-            // 時計機能を削除（フッターから時計を除去したため）
-        }
+    }
 
-        // ウィンドウリサイズ時の表示調整
-        function handleResize() {
-            if (window.innerWidth >= 1024) {
-                // PC表示：3カラム全表示
-                document.getElementById('team-trap').classList.remove('hidden');
-                document.getElementById('team-skeet').classList.remove('hidden');
-                document.getElementById('team-overall').classList.remove('hidden');
-                
-                // アコーディオンを全て開く
-                document.querySelectorAll('.accordion-content').forEach(content => {
-                    content.style.maxHeight = 'none';
-                });
-                document.querySelectorAll('.accordion-chevron').forEach(icon => {
-                    icon.classList.add('rotate-180');
-                });
-            } else {
-                // スマホ表示：アクティブなタブのみ表示
-                const activeTab = document.querySelector('.tab.active');
-                if (activeTab) {
-                    const tabName = activeTab.getAttribute('onclick').match(/'([^']+)'/)[1];
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-                    document.getElementById(tabName).classList.remove('hidden');
+    // --- データ取得と画面描画 ---
+    function fetchData() {
+        const loadingOverlay = document.getElementById('loading-overlay');
+        loadingOverlay.classList.remove('hidden');
+        const spreadsheetId = '<?!= s ?>';
+
+        google.script.run
+            .withSuccessHandler(data => {
+                if (data.error) {
+                    console.error("Error from GAS: ", data.error);
+                    loadingOverlay.innerHTML = `<p class="text-red-500 p-4">データ取得エラー: ${data.error}</p>`;
+                    return;
                 }
+                renderHeaderAndFooter(data.eventInfo);
+                renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#c855e3');
+                renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#eebf35');
+                renderTeamOverall(data.teamOverall, 'team-overall-results');
                 
-                // アコーディオンを初期状態に戻す
-                document.querySelectorAll('.accordion-content').forEach(content => {
-                    content.style.maxHeight = null;
-                });
-                document.querySelectorAll('.accordion-chevron').forEach(icon => {
-                    icon.classList.remove('rotate-180');
-                });
-            }
-        }
+                handleResize(); 
+                
+                // ★ 修正：アコーディオン初期化関数は不要になったため削除
+                
+                loadingOverlay.classList.add('hidden');
+            })
+            .withFailureHandler(error => {
+                console.error("Error fetching data: ", error);
+                loadingOverlay.innerHTML = '<p class="text-red-500 p-4">データ取得エラー</p>';
+            })
+            .getTeamData(spreadsheetId);
+    }
 
-        // --- データ取得と画面描画 ---
-        function fetchData() {
-            const loadingOverlay = document.getElementById('loading-overlay');
-            loadingOverlay.classList.remove('hidden');
+    // --- 初期化処理 ---
+    document.addEventListener('DOMContentLoaded', () => {
+        handleResize();
+        fetchData();
+        setInterval(fetchData, 600000);
+    });
 
-            const spreadsheetId = '<?!= s ?>';
-
-            google.script.run
-                .withSuccessHandler(data => {
-                    if (data.error) {
-                        console.error("Error from GAS: ", data.error);
-                        loadingOverlay.innerHTML = `<p class="text-red-500 p-4">データ取得エラー: ${data.error}</p>`;
-                        return;
-                    }
-                    renderHeaderAndFooter(data.eventInfo);
-                    renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#c855e3');
-                    renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#eebf35');
-                    renderTeamOverall(data.teamOverall, 'team-overall-results');
-                    
-                    // データ表示後にレスポンシブ処理を実行
-                    handleResize();
-                    
-                    loadingOverlay.classList.add('hidden');
-                })
-                .withFailureHandler(error => {
-                    console.error("Error fetching data: ", error);
-                    loadingOverlay.innerHTML = '<p class="text-red-500 p-4">データ取得エラー</p>';
-                })
-                .getTeamData(spreadsheetId);
-        }
-
-        // --- 初期化処理 ---
-        document.addEventListener('DOMContentLoaded', () => {
-            handleResize(); // 初期表示調整
-            fetchData(); // 初回データ取得
-            setInterval(fetchData, 600000); // 10分ごとにデータを更新
-        });
-
-        // リサイズイベントリスナー
-        window.addEventListener('resize', handleResize);
-
-  </script>
+    window.addEventListener('resize', handleResize);
+</script>
 </body>
 
 </html>

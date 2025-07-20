@@ -353,7 +353,7 @@ button.bg-card .team-name {
 }
 
 .tab.active {
-    background-color: #3B82F6 !important;
+    background-color: rgba(255,255,255,0.3) !important;
     color: white !important;
     border-bottom-color: transparent !important;
 }
@@ -539,7 +539,15 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
     .mobile-only {
         display: block;
     }
+
+    .tab {
+        font-size: 5vw !important; 
+        padding: 3vw 2vw !important; 
+        border-top-left-radius: 2vw; /* 左上の角を丸くする */
+        border-top-right-radius: 2vw; /* 右上の角を丸くする */
+    }
     
+
     /* スマホ版射撃競技特有要素 */
     .section-title { font-size: 6vw !important; margin-bottom: 4vw !important; }
 .team-rank { font-size: 7vw !important; line-height: 7vw !important; }
@@ -588,7 +596,7 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
     font-weight: 700;
 }
 .team-total-breakdown {
-    font-size: 5.5vw; /* 内訳のフォントサイズ */
+    font-size: 4vw; /* 内訳のフォントサイズ */
 }
 .total-separator {
     color: rgba(255,255,255,0.8);
@@ -613,7 +621,7 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
     
     /* テキストサイズ */
     .text-xs { font-size: 1.2vh; line-height: 1.6vh; }
-    .text-sm { font-size: 1.4vh; line-height: 2vh; }
+    .text-sm { font-size: 1.4vh; line-height: 0.9; }
     .text-lg { font-size: 1.8vh; line-height: 2.8vh; }
     .text-xl { font-size: 2vh; line-height: 2.8vh; }
     .text-2xl { font-size: 2.4vh; line-height: 3.2vh; }
@@ -940,4 +948,38 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
     text-align: right !important;
     padding-right: 0.0vw !important;
 }
+
+}
+
+
+/* === チームアイコンのスタイル === */
+.team-icon-style {
+  border-radius: 50%; /* 円形にする */
+  object-fit: cover;    /* 画像のアスペクト比を維持しつつ、要素にフィットさせる */
+  vertical-align: middle; /* テキストと垂直方向中央に揃える */
+}
+
+/* === レスポンシブ：スマホ版 === */
+@media (max-width: 1023px) {
+  .team-icon-style {
+    height: 8vw; /* チーム名のフォントサイズ(6vw)に合わせて調整 */
+    width: 8vw;
+    margin-right: 2vw; /* 右側の余白 */
+  }
+}
+
+/* === レスポンシブ：PC版 === */
+@media (min-width: 1024px) {
+  .team-icon-style {
+    height: 2.8vh; /* チーム名のフォントサイズ(2vh)に合わせる */
+    width: 2.8vh;
+    margin-right: 0.8vh; /* 右側の余白 */
+  }
+}
+/* カードヘッダーのフォントファミリーを Arial に統一 */
+.team-rank,
+.team-name, 
+.team-total, 
+.team-total-container {
+    font-family: 'Arial', sans-serif !important;
 }
