@@ -1,5 +1,5 @@
 // テスト用URL
-// https://script.google.com/a/macros/s-live.app/s/AKfycbw30nl9TJx5dt01rZaRlPDszm260hdevMhxZfkj0jCz/dev?s=1adOhszHoKkreKUFCa7b8z7p72ue-frsBOJkR7yRHwQg
+// https://script.google.com/a/macros/s-live.app/s/AKfycbw30nl9TJx5dt01rZaRlPDszm260hdevMhxZfkj0jCz/dev?s=1adOhszHoKkreKUFCa7b8z7p72ue-frsBOJkR7yRHwQg&qr=results/team/2024
 
 /**
  * WebページとしてアクセスされたときにHTMLを返す
@@ -7,8 +7,9 @@
  */
 function doGet(e) {
   const template = HtmlService.createTemplateFromFile('index');
-  // URLパラメータからスプレッドシートIDのみを取得してテンプレートに渡す
+  // URLパラメータからスプレッドシートIDとQRパラメータを取得してテンプレートに渡す
   template.s = e.parameter.s || '';
+  template.qr = e.parameter.qr || ''; // QRコード用パラメータを追加
 
   return template.evaluate()
     .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL)
@@ -27,9 +28,10 @@ function include(filename) {
 /**
  * HTML側から呼び出され、団体戦の全データをJSONオブジェクトとして返す
  * @param {string} s - スプレッドシートID
+ * @param {string} qrParam - QRコード生成用パラメータ
  * @returns {object} 大会情報、競技別団体、総合団体のデータを含むオブジェクト
  */
-function getTeamData(s) {
+function getTeamData(s, qrParam) {
   if (!s) {
     const errorMessage = "Error: Spreadsheet ID(s) is missing.";
     console.error(errorMessage);
@@ -45,8 +47,8 @@ function getTeamData(s) {
     if (!trapSheet) return { error: `Sheet "トラップ" not found.` };
     if (!skeetSheet) return { error: `Sheet "スキート" not found.` };
 
-    // 大会情報はsパラメータのみで取得
-    const eventInfo = getEventInfoFromSheet(s);
+    // 大会情報を取得（QRコードパラメータも渡す）
+    const eventInfo = getEventInfoFromSheet(s, qrParam);
 
     // 各シートから選手データをパース
     const trapPlayers = parsePlayersData(trapSheet, 'trap');
@@ -75,9 +77,10 @@ function getTeamData(s) {
 /**
  * オリジナルの getEventInfoData をベースに団体戦用に調整
  * @param {string} s - スプレッドシートID
+ * @param {string} qrParam - QRコード生成用パラメータ
  * @returns {object} 大会情報オブジェクト
  */
-function getEventInfoFromSheet(s) {
+function getEventInfoFromSheet(s, qrParam) {
   // オリジナルと同じく「大会情報」シートから取得
   var sheet = SpreadsheetApp.openById(s).getSheetByName('大会情報');
   var eData = sheet.getDataRange().getValues().slice(1, 3); // 最大2件のデータを取得
@@ -128,11 +131,20 @@ function getEventInfoFromSheet(s) {
     console.log('S-LIVE: caught an error,set default values:', error);
   }
 
-  // 団体戦用のQRコード生成（オリジナルのQR Server APIを使用）
-  var teamResultsUrl = `${ScriptApp.getService().getUrl()}?s=${s}`;
-  var qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" +
-    encodeURIComponent(teamResultsUrl) +
-    '&format=png&margin=10&size=150x150';
+  // QRコード生成（修正版）
+  var qrCodeUrl = "";
+  if (qrParam) {
+    // パラメータが指定されている場合
+    var targetUrl = "https://s-live.org/" + qrParam;
+    qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" +
+      encodeURIComponent(targetUrl) +
+      '&format=png&margin=10&size=150x150';
+  } else {
+    // デフォルトのQRコード（s-live.orgのトップページ）
+    qrCodeUrl = "https://api.qrserver.com/v1/create-qr-code/?data=" +
+      encodeURIComponent("https://s-live.org/") +
+      '&format=png&margin=10&size=150x150';
+  }
 
   // オリジナルの形式でデータを構築
   return {

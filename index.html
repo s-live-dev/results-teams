@@ -17,14 +17,20 @@
   <style>
     <?!=include('styles');
     ?>
+    
+    /* 初期状態ではコンテンツを非表示 */
+    body {
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    
+    body.loaded {
+      opacity: 1;
+    }
   </style>
 </head>
 
 <body class="flex flex-col">
-
-  <div id="loading-overlay" class="fixed inset-0 bg-overlay flex justify-center items-center z-50">
-    <i class="fa-solid fa-spinner fa-spin text-4xl text-white"></i>
-  </div>
 
   <header class="mobile-only header-gradient">
     <img id="event-flag" src="" alt="Flag" class="hidden">
@@ -116,7 +122,54 @@
         return `${baseUrl}${teamName}.png`; 
     }
 
-    // ★ 修正：アコーディオン機能を無効にし、常に開いた状態にする
+    // 画像をプリロードする関数
+    function preloadImages(urls) {
+        return Promise.all(urls.map(url => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(url);
+                img.onerror = () => {
+                    console.warn(`Failed to load image: ${url}`);
+                    resolve(url); // エラーでも処理を続行
+                };
+                img.src = url;
+            });
+        }));
+    }
+
+    // すべての必要な画像URLを収集する関数
+    function collectImageUrls(data) {
+        const urls = new Set();
+        
+        // ヘッダー画像
+        if (data.eventInfo.flagUrl) {
+            urls.add(data.eventInfo.flagUrl);
+        }
+        if (data.eventInfo.qrCodeUrl) {
+            urls.add(data.eventInfo.qrCodeUrl);
+        }
+        
+        // バッジ画像
+        urls.add('https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png');
+        urls.add('https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png');
+        urls.add('https://s-live.org/wp-content/plugins/s-live/resource/TEAM.png');
+        
+        // チームアイコン
+        const allTeams = [
+            ...(data.teamEvent.trap || []),
+            ...(data.teamEvent.skeet || []),
+            ...(data.teamOverall || [])
+        ];
+        
+        allTeams.forEach(team => {
+            if (team.name) {
+                urls.add(getTeamIconUrl(team.name));
+            }
+        });
+        
+        return Array.from(urls);
+    }
+
     function renderTeamEvent(data, targetId, color) {
         const container = document.getElementById(targetId);
         if (!data || data.length === 0) {
@@ -165,7 +218,6 @@
         `).join('');
     }
 
-    // 総合成績はアコーディオンとして維持するため、この関数は変更なし
     function renderTeamOverall(data, targetId) {
         const container = document.getElementById(targetId);
         if (!data || data.length === 0) {
@@ -283,7 +335,6 @@
         document.querySelector(`button[onclick="changeTab('${tabName}')"]`).classList.add('active');
     }
 
-    // 総合成績タブでのみ使用される
     function toggleAccordion(buttonElement) {
         if (window.innerWidth >= 1024) return;
         const content = buttonElement.nextElementSibling;
@@ -315,7 +366,6 @@
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
                 document.getElementById(tabName).classList.remove('hidden');
             }
-            // アコーディオンの初期状態をリセット（総合成績のみが対象になる）
             document.querySelectorAll('.accordion-content').forEach(content => {
                 content.style.maxHeight = null;
             });
@@ -327,33 +377,38 @@
 
     // --- データ取得と画面描画 ---
     function fetchData() {
-        const loadingOverlay = document.getElementById('loading-overlay');
-        loadingOverlay.classList.remove('hidden');
         const spreadsheetId = '<?!= s ?>';
+        const qrParam = '<?!= qr ?>';
 
         google.script.run
             .withSuccessHandler(data => {
                 if (data.error) {
                     console.error("Error from GAS: ", data.error);
-                    loadingOverlay.innerHTML = `<p class="text-red-500 p-4">データ取得エラー: ${data.error}</p>`;
+                    document.body.innerHTML = `<p class="text-red-500 p-4">データ取得エラー: ${data.error}</p>`;
                     return;
                 }
-                renderHeaderAndFooter(data.eventInfo);
-                renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#c855e3');
-                renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#eebf35');
-                renderTeamOverall(data.teamOverall, 'team-overall-results');
                 
-                handleResize(); 
+                // 画像URLを収集
+                const imageUrls = collectImageUrls(data);
                 
-                // ★ 修正：アコーディオン初期化関数は不要になったため削除
-                
-                loadingOverlay.classList.add('hidden');
+                // すべての画像をプリロードしてから表示
+                preloadImages(imageUrls).then(() => {
+                    renderHeaderAndFooter(data.eventInfo);
+                    renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#c855e3');
+                    renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#eebf35');
+                    renderTeamOverall(data.teamOverall, 'team-overall-results');
+                    
+                    handleResize();
+                    
+                    // コンテンツの表示
+                    document.body.classList.add('loaded');
+                });
             })
             .withFailureHandler(error => {
                 console.error("Error fetching data: ", error);
-                loadingOverlay.innerHTML = '<p class="text-red-500 p-4">データ取得エラー</p>';
+                document.body.innerHTML = '<p class="text-red-500 p-4">データ取得エラー</p>';
             })
-            .getTeamData(spreadsheetId);
+            .getTeamData(spreadsheetId, qrParam);
     }
 
     // --- 初期化処理 ---
