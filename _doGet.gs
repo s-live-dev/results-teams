@@ -178,21 +178,30 @@ function parsePlayersData(sheet, discipline) {
   const players = [];
 
   data.forEach(row => {
-    if (!row[5] || !row[6]) return; // 氏名(F列)と所属(G列)が空ならスキップ
-
-    // W列(index:22)がRPOの選手は除外
+    if (!row[5] || !row[6]) return;
     if (row[22] === "RPO") return;
+
+    // タイムスタンプの処理を改善
+    let updateTimeString = null;
+    if (row[19] instanceof Date) {
+      // Date型の場合、日本時間でフォーマット
+      updateTimeString = Utilities.formatDate(row[19], "Asia/Tokyo", "yyyy-MM-dd HH:mm:ss");
+    } else if (row[19]) {
+      // 既に文字列の場合はそのまま使用
+      updateTimeString = row[19].toString();
+    }
 
     players.push({
       discipline: discipline,
-      team: row[6], // G列: 所属
-      name: row[5], // F列: 氏名
-      pos: Number(row[2]) || 999, // C列: 個人順位（Pos）
+      team: row[6],
+      name: row[5],
+      pos: Number(row[2]) || 999,
       r1: Number(row[7]) || 0,
       r2: Number(row[8]) || 0,
       r3: Number(row[9]) || 0,
       r4: Number(row[10]) || 0,
-      total: Number(row[17]) || 0 // R列: GT
+      total: Number(row[17]) || 0,
+      updateTime: updateTimeString // 文字列として保存
     });
   });
   return players;
@@ -245,6 +254,7 @@ function calculateTeamResults(players) {
     const overallTrapPlayers = teamPlayers.trap.slice(0, 5);
     const overallSkeetPlayers = teamPlayers.skeet.slice(0, 3);
 
+    // 総合団体のマッピング部分を修正
     if (overallTrapPlayers.length > 0 || overallSkeetPlayers.length > 0) {
       const trapTotal = overallTrapPlayers.reduce((sum, p) => sum + p.total, 0);
       const skeetTotal = overallSkeetPlayers.reduce((sum, p) => sum + p.total, 0);
@@ -261,7 +271,8 @@ function calculateTeamResults(players) {
           r1: p.r1,
           r2: p.r2,
           r3: p.r3,
-          r4: p.r4
+          r4: p.r4,
+          updateTime: p.updateTime // タイムスタンプを追加
         })),
         skeetPlayers: overallSkeetPlayers.map((p, i) => ({
           name: p.name,
@@ -271,7 +282,8 @@ function calculateTeamResults(players) {
           r1: p.r1,
           r2: p.r2,
           r3: p.r3,
-          r4: p.r4
+          r4: p.r4,
+          updateTime: p.updateTime // タイムスタンプを追加
         }))
       });
     }

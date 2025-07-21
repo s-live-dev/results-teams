@@ -207,7 +207,10 @@
                                           <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r2)}">${p.r2}</td>
                                           <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r3)}">${p.r3}</td>
                                           <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r4)}">${p.r4}</td>
-                                          <td class="text-right lg-text-center py-0-5 pr-0 font-bold player-score" style="${getTotalScoreStyle(p.total, color)}">${p.total}</td>
+                                          // renderTeamEvent関数を修正
+                                          <td class="text-right lg-text-center py-0-5 pr-0 font-bold player-score">
+                                              <span class="score-value" style="${getTotalScoreStyle(p.total, color)}">${p.total}</span>
+                                          </td>
                                       </tr>
                                   `).join('')}
                               </tbody>
@@ -268,7 +271,9 @@
                                                     <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r2)}">${p.r2}</td>
                                                     <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)}">${p.r3}</td>
                                                     <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)}">${p.r4}</td>
-                                                    <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight" style="${getTotalScoreStyle(p.total, '#c855e3')}">${p.total}</td>
+                                                    <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight">
+                                                        <span class="score-value" style="${getTotalScoreStyle(p.total, '#c855e3')}">${p.total}</span>
+                                                    </td>
                                                 </tr>
                                             `).join('')}
                                         </tbody>
@@ -294,7 +299,9 @@
                                                     <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r2)}">${p.r2}</td>
                                                     <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)}">${p.r3}</td>
                                                     <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)}">${p.r4}</td>
-                                                    <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight" style="${getTotalScoreStyle(p.total, '#eebf35')}">${p.total}</td>
+                                                    <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight">
+                                                        <span class="score-value" style="${getTotalScoreStyle(p.total, '#c855e3')}">${p.total}</span>
+                                                    </td>
                                                 </tr>
                                             `).join('')}
                                         </tbody>
@@ -377,127 +384,152 @@
     }
 
     // --- データ取得と画面描画 ---
-    function fetchData() {
-        const spreadsheetId = '<?!= s ?>';
-        const qrParam = '<?!= qr ?>';
+    // グローバルスコープで変数を定義
+    const spreadsheetId = '<?!= s ?>';
+    const qrParam = '<?!= qr ?>';
+    const fiveMinutes = 5 * 60 * 1000; // 5分
 
-        google.script.run
-            .withSuccessHandler(data => {
-                if (data.error) {
-                    console.error("Error from GAS: ", data.error);
-                    document.body.innerHTML = `<p class="text-red-500 p-4">データ取得エラー: ${data.error}</p>`;
-                    return;
+// タイムスタンプベースの更新検知（完全版）
+function detectAndHighlightChanges(newData) {
+    const now = new Date();
+
+    
+    console.log('現在時刻:', now.toLocaleString('ja-JP')); // デバッグ用
+    
+    // 各種目での更新時刻チェック（トラップ・スキート種目別）
+    ['trap', 'skeet'].forEach(discipline => {
+        newData.teamEvent[discipline].forEach(team => {
+            team.players.forEach(player => {
+                if (player.updateTime) {
+                    // 文字列からDate型に変換（日本時間として解釈）
+                    const updateTime = new Date(player.updateTime);
+                    const diff = now - updateTime;
+                    
+                    console.log(`[${discipline}] ${player.name}: 更新時刻=${player.updateTime}, 差分=${Math.floor(diff/1000)}秒`); // デバッグ用
+                    
+                    if (diff >= 0 && diff <= fiveMinutes) {
+                        // 5分以内の更新なら点滅対象
+                        highlightPlayer(team.name, player.name);
+                    }
                 }
-                
-                // 画像URLを収集
-                const imageUrls = collectImageUrls(data);
-                
-                // すべての画像をプリロードしてから表示
-                preloadImages(imageUrls).then(() => {
-                    renderHeaderAndFooter(data.eventInfo);
-                    renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#c855e3');
-                    renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#eebf35');
-                    renderTeamOverall(data.teamOverall, 'team-overall-results');
-                    
-                    handleResize();
-                    
-                    // コンテンツの表示
-                    document.body.classList.add('loaded');
-                });
-            })
-            .withFailureHandler(error => {
-                console.error("Error fetching data: ", error);
-                document.body.innerHTML = '<p class="text-red-500 p-4">データ取得エラー</p>';
-            })
-            .getTeamData(spreadsheetId, qrParam);
-    }
-
-
-    window.addEventListener('resize', handleResize);
-
-    // 1. 更新間隔を30秒に変更
-    document.addEventListener('DOMContentLoaded', () => {
-        fetchData();
-        setInterval(fetchData, 30000); // 30秒ごとに更新
+            });
+        });
     });
-
-    // 2. データ取得後の差分検知を追加
-    function fetchData() {
-        google.script.run
-            .withSuccessHandler(data => {
-                // 前回データとの比較
-                if (window.previousTeamData) {
-                    detectAndHighlightChanges(data, window.previousTeamData);
-                }
+    
+    // 総合成績での更新時刻チェック
+    newData.teamOverall.forEach(team => {
+        // トラップ選手（上位5名）
+        team.trapPlayers.forEach(player => {
+            if (player.updateTime) {
+                const updateTime = new Date(player.updateTime);
+                const diff = now - updateTime;
                 
-                // 通常の描画処理
+                console.log(`[総合-トラップ] ${player.name}: 更新時刻=${player.updateTime}, 差分=${Math.floor(diff/1000)}秒`); // デバッグ用
+                
+                if (diff >= 0 && diff <= fiveMinutes) {
+                    highlightPlayer(team.name, player.name);
+                }
+            }
+        });
+        
+        // スキート選手（上位3名）
+        team.skeetPlayers.forEach(player => {
+            if (player.updateTime) {
+                const updateTime = new Date(player.updateTime);
+                const diff = now - updateTime;
+                
+                console.log(`[総合-スキート] ${player.name}: 更新時刻=${player.updateTime}, 差分=${Math.floor(diff/1000)}秒`); // デバッグ用
+                
+                if (diff >= 0 && diff <= fiveMinutes) {
+                    highlightPlayer(team.name, player.name);
+                }
+            }
+        });
+    });
+}
+
+// 選手の合計値セルのみを点滅させる
+function highlightPlayer(teamName, playerName) {
+    setTimeout(() => {
+        const selector = `tr[data-team="${teamName}"][data-player="${playerName}"]`;
+        const rows = document.querySelectorAll(selector);
+        
+        console.log(`点滅対象検索: ${selector}, 見つかった行数: ${rows.length}`); // デバッグ用
+        
+        rows.forEach(row => {
+            // 合計値のセル（最後のtd）のみに点滅クラスを追加
+            const totalCell = row.querySelector('td:last-child');
+            if (totalCell && totalCell.classList.contains('player-score')) {
+                totalCell.classList.add('updnew');
+                console.log(`点滅クラス追加: ${teamName} - ${playerName}`); // デバッグ用
+                
+                // 5分後に点滅クラスを削除
+                setTimeout(() => {
+                    totalCell.classList.remove('updnew');
+                }, fiveMinutes);
+            }
+        });
+    }, 500);
+}
+// highlightPlayer関数
+function highlightPlayer(teamName, playerName) {
+    setTimeout(() => {
+        const selector = `tr[data-team="${teamName}"][data-player="${playerName}"]`;
+        const rows = document.querySelectorAll(selector);
+        
+        rows.forEach(row => {
+            // 合計値のspan要素を取得
+            const totalCell = row.querySelector('td:last-child');
+            const scoreSpan = totalCell?.querySelector('.score-value');
+            if (scoreSpan) {
+                scoreSpan.classList.add('updnew');
+                console.log(`点滅クラス追加: ${teamName} - ${playerName}`);
+                
+                // 5分後に点滅クラスを削除
+                setTimeout(() => {
+                    scoreSpan.classList.remove('updnew');
+                }, fiveMinutes);
+            }
+        });
+    }, 500);
+}
+
+// fetchData関数も修正（前回データの保存は不要に）
+function fetchData() {
+    google.script.run
+        .withSuccessHandler(data => {
+            if (data.error) {
+                console.error("Error from GAS: ", data.error);
+                document.body.innerHTML = `<p class="text-red-500 p-4">データ取得エラー: ${data.error}</p>`;
+                return;
+            }
+            
+            // 画像URLを収集
+            const imageUrls = collectImageUrls(data);
+            
+            // すべての画像をプリロードしてから表示
+            preloadImages(imageUrls).then(() => {
                 renderHeaderAndFooter(data.eventInfo);
                 renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#c855e3');
                 renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#eebf35');
                 renderTeamOverall(data.teamOverall, 'team-overall-results');
                 
-                // 現在のデータを保存
-                window.previousTeamData = JSON.parse(JSON.stringify(data));
-                
                 handleResize();
+                
+                // タイムスタンプベースの更新検知（毎回実行）
+                detectAndHighlightChanges(data);
+                
+                // コンテンツの表示
                 document.body.classList.add('loaded');
-            })
-            .getTeamData(spreadsheetId, qrParam);
-    }
+            });
+        })
+        .withFailureHandler(error => {
+            console.error("Error fetching data: ", error);
+            document.body.innerHTML = '<p class="text-red-500 p-4">データ取得エラー</p>';
+        })
+        .getTeamData(spreadsheetId, qrParam);
+}
 
-    // 3. 差分検知と点滅処理
-    function detectAndHighlightChanges(newData, oldData) {
-        const changedPlayers = [];
-        
-        // 各種目での個人スコア変更を検知
-        ['trap', 'skeet'].forEach(discipline => {
-            newData.teamEvent[discipline].forEach((newTeam, teamIdx) => {
-                const oldTeam = oldData.teamEvent[discipline]?.[teamIdx];
-                if (!oldTeam) return;
-                
-                newTeam.players.forEach((newPlayer, playerIdx) => {
-                    const oldPlayer = oldTeam.players?.[playerIdx];
-                    if (oldPlayer && (
-                        newPlayer.r1 !== oldPlayer.r1 ||
-                        newPlayer.r2 !== oldPlayer.r2 ||
-                        newPlayer.r3 !== oldPlayer.r3 ||
-                        newPlayer.r4 !== oldPlayer.r4 ||
-                        newPlayer.total !== oldPlayer.total
-                    )) {
-                        changedPlayers.push({
-                            discipline,
-                            teamName: newTeam.name,
-                            playerName: newPlayer.name,
-                            playerRank: newPlayer.rank
-                        });
-                    }
-                });
-            });
-        });
-        
-        // DOM更新後に点滅クラスを適用
-        setTimeout(() => {
-            changedPlayers.forEach(change => {
-                // data属性を使って該当選手の行を特定
-                const selector = `tr[data-team="${change.teamName}"][data-player="${change.playerName}"]`;
-                const rows = document.querySelectorAll(selector);
-                
-                rows.forEach(row => {
-                    // スコアセルに点滅クラスを追加
-                    row.querySelectorAll('.player-score').forEach(cell => {
-                        cell.classList.add('updnew');
-                    });
-                    
-                    // 5分後に点滅を解除
-                    setTimeout(() => {
-                        row.querySelectorAll('.player-score').forEach(cell => {
-                            cell.classList.remove('updnew');
-                        });
-                    }, 5 * 60 * 1000);
-                });
-            });
-        }, 500); // DOM描画完了を待つ
-    }
 
     // PC版での順位変動検知とアニメーション
     function detectRankChanges(newData, oldData) {
@@ -562,6 +594,15 @@
             }
         });
     }
+
+    // --- 初期化処理 ---
+    document.addEventListener('DOMContentLoaded', () => {
+        handleResize();
+        fetchData();
+        setInterval(fetchData, 30000); // 30秒ごとに更新
+    });
+
+    window.addEventListener('resize', handleResize);
 
 </script>
 </body>
