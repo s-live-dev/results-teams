@@ -321,3 +321,36 @@ function calculateTeamResults(players) {
 
   return { eventTrap, eventSkeet, overall };
 }
+
+/**
+ * Google Driveから音声ファイルを取得して配信
+ * @param {string} fileId - Google DriveのファイルID
+ */
+function getAudioFile(fileId) {
+  try {
+    const file = DriveApp.getFileById(fileId);
+    const blob = file.getBlob();
+    const base64 = Utilities.base64Encode(blob.getBytes());
+    return {
+      success: true,
+      mimeType: blob.getContentType(),
+      data: base64
+    };
+  } catch (e) {
+    console.error('音声ファイル取得エラー:', e);
+    return {
+      success: false,
+      error: e.toString()
+    };
+  }
+}
+
+/**
+ * 音声ファイルのメタデータを返す
+ */
+function getAudioMetadata() {
+  return {
+    rankUp: '1IiMHevzXEsNGRmLF4YhlzGhevEYymKx0',
+    playerUpdate: '1aAYjHBSezYOwYyxMsCR7P_0sHrjJIt0j'
+  };
+}
