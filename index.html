@@ -171,51 +171,52 @@
     }
 
     function renderTeamEvent(data, targetId, color) {
-        const container = document.getElementById(targetId);
-        if (!data || data.length === 0) {
-            container.innerHTML = '<p class="text-gray-400 text-center p-4">データがありません。</p>';
-            return;
-        }
+      const container = document.getElementById(targetId);
+      if (!data || data.length === 0) {
+          container.innerHTML = '<p class="text-gray-400 text-center p-4">データがありません。</p>';
+          return;
+      }
 
-        container.innerHTML = data.map((team) => `
-            <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
-                <div class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
-                    <div class="flex items-center justify-center">
-                        <span class="team-rank w-8 text-left text-lg lg-text-base" style="color: #F3F4F6 !important;">${team.rank}</span>
-                        <img src="${getTeamIconUrl(team.name)}" alt="${team.name} icon" class="team-icon-style">
-                        <span class="team-name flex-1 pr-4 text-center lg-text-base" style="color: #F3F4F6 !important;">${team.name}</span>
-                    </div>
-                    <div class="flex items-center justify-center">
-                        <span class="team-total text-xl lg-text-lg mr-0" style="${getTotalScoreStyle(team.total, color)}">${team.total}</span>
-                    </div>
-                </div>
+      container.innerHTML = data.map((team) => `
+          <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20" 
+              data-team-card="${team.name}">
+              <div class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
+                  <div class="flex items-center justify-center">
+                      <span class="team-rank w-8 text-left text-lg lg-text-base" style="color: #F3F4F6 !important;">${team.rank}</span>
+                      <img src="${getTeamIconUrl(team.name)}" alt="${team.name} icon" class="team-icon-style">
+                      <span class="team-name flex-1 pr-4 text-center lg-text-base" style="color: #F3F4F6 !important;">${team.name}</span>
+                  </div>
+                  <div class="flex items-center justify-center">
+                      <span class="team-total text-xl lg-text-lg mr-0" style="${getTotalScoreStyle(team.total, color)}">${team.total}</span>
+                  </div>
+              </div>
 
-                <div class="pb-2">
-                    <div class="px-6">
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm min-w-300 table-fixed">
-                                <colgroup>
-                                    <col style="width: 7% !important;">   <col style="width: 40% !important;">  <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 13% !important;">
-                                </colgroup>
-                                <tbody class="divide-y">
-                                    ${team.players.map(p => `
-                                        <tr style="color: #F3F4F6 !important;">
-                                            <td class="py-0-5 player-score" style="color: #F3F4F6 !important;">${p.rank}</td>
-                                            <td class="py-0-5 pl-0 player-name" style="color: #F3F4F6 !important;">${p.name}<span class="player-pos"> (${p.pos})</span></td>
-                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r1)}">${p.r1}</td>
-                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r2)}">${p.r2}</td>
-                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r3)}">${p.r3}</td>
-                                            <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r4)}">${p.r4}</td>
-                                            <td class="text-right lg-text-center py-0-5 pr-0 font-bold player-score" style="${getTotalScoreStyle(p.total, color)}">${p.total}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+              <div class="pb-2">
+                  <div class="px-6">
+                      <div class="overflow-x-auto">
+                          <table class="w-full text-sm min-w-300 table-fixed">
+                              <colgroup>
+                                  <col style="width: 7% !important;">   <col style="width: 40% !important;">  <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 8% !important;">   <col style="width: 13% !important;">
+                              </colgroup>
+                              <tbody class="divide-y">
+                                  ${team.players.map(p => `
+                                      <tr data-team="${team.name}" data-player="${p.name}">
+                                          <td class="py-0-5 player-score" style="color: #F3F4F6 !important;">${p.rank}</td>
+                                          <td class="py-0-5 pl-0 player-name" style="color: #F3F4F6 !important;">${p.name}<span class="player-pos"> (${p.pos})</span></td>
+                                          <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r1)}">${p.r1}</td>
+                                          <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r2)}">${p.r2}</td>
+                                          <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r3)}">${p.r3}</td>
+                                          <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r4)}">${p.r4}</td>
+                                          <td class="text-right lg-text-center py-0-5 pr-0 font-bold player-score" style="${getTotalScoreStyle(p.total, color)}">${p.total}</td>
+                                      </tr>
+                                  `).join('')}
+                              </tbody>
+                          </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      `).join('');
     }
 
     function renderTeamOverall(data, targetId) {
@@ -411,14 +412,157 @@
             .getTeamData(spreadsheetId, qrParam);
     }
 
-    // --- 初期化処理 ---
-    document.addEventListener('DOMContentLoaded', () => {
-        handleResize();
-        fetchData();
-        setInterval(fetchData, 600000);
-    });
 
     window.addEventListener('resize', handleResize);
+
+    // 1. 更新間隔を30秒に変更
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchData();
+        setInterval(fetchData, 30000); // 30秒ごとに更新
+    });
+
+    // 2. データ取得後の差分検知を追加
+    function fetchData() {
+        google.script.run
+            .withSuccessHandler(data => {
+                // 前回データとの比較
+                if (window.previousTeamData) {
+                    detectAndHighlightChanges(data, window.previousTeamData);
+                }
+                
+                // 通常の描画処理
+                renderHeaderAndFooter(data.eventInfo);
+                renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#c855e3');
+                renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#eebf35');
+                renderTeamOverall(data.teamOverall, 'team-overall-results');
+                
+                // 現在のデータを保存
+                window.previousTeamData = JSON.parse(JSON.stringify(data));
+                
+                handleResize();
+                document.body.classList.add('loaded');
+            })
+            .getTeamData(spreadsheetId, qrParam);
+    }
+
+    // 3. 差分検知と点滅処理
+    function detectAndHighlightChanges(newData, oldData) {
+        const changedPlayers = [];
+        
+        // 各種目での個人スコア変更を検知
+        ['trap', 'skeet'].forEach(discipline => {
+            newData.teamEvent[discipline].forEach((newTeam, teamIdx) => {
+                const oldTeam = oldData.teamEvent[discipline]?.[teamIdx];
+                if (!oldTeam) return;
+                
+                newTeam.players.forEach((newPlayer, playerIdx) => {
+                    const oldPlayer = oldTeam.players?.[playerIdx];
+                    if (oldPlayer && (
+                        newPlayer.r1 !== oldPlayer.r1 ||
+                        newPlayer.r2 !== oldPlayer.r2 ||
+                        newPlayer.r3 !== oldPlayer.r3 ||
+                        newPlayer.r4 !== oldPlayer.r4 ||
+                        newPlayer.total !== oldPlayer.total
+                    )) {
+                        changedPlayers.push({
+                            discipline,
+                            teamName: newTeam.name,
+                            playerName: newPlayer.name,
+                            playerRank: newPlayer.rank
+                        });
+                    }
+                });
+            });
+        });
+        
+        // DOM更新後に点滅クラスを適用
+        setTimeout(() => {
+            changedPlayers.forEach(change => {
+                // data属性を使って該当選手の行を特定
+                const selector = `tr[data-team="${change.teamName}"][data-player="${change.playerName}"]`;
+                const rows = document.querySelectorAll(selector);
+                
+                rows.forEach(row => {
+                    // スコアセルに点滅クラスを追加
+                    row.querySelectorAll('.player-score').forEach(cell => {
+                        cell.classList.add('updnew');
+                    });
+                    
+                    // 5分後に点滅を解除
+                    setTimeout(() => {
+                        row.querySelectorAll('.player-score').forEach(cell => {
+                            cell.classList.remove('updnew');
+                        });
+                    }, 5 * 60 * 1000);
+                });
+            });
+        }, 500); // DOM描画完了を待つ
+    }
+
+    // PC版での順位変動検知とアニメーション
+    function detectRankChanges(newData, oldData) {
+        if (window.innerWidth < 1024) return; // PC版のみ
+        
+        const rankChanges = [];
+        
+        ['trap', 'skeet'].forEach(discipline => {
+            const oldRankMap = new Map();
+            oldData.teamEvent[discipline].forEach(team => {
+                oldRankMap.set(team.name, team.rank);
+            });
+            
+            newData.teamEvent[discipline].forEach(team => {
+                const oldRank = oldRankMap.get(team.name);
+                if (oldRank && oldRank !== team.rank) {
+                    rankChanges.push({
+                        discipline,
+                        teamName: team.name,
+                        oldRank,
+                        newRank: team.rank,
+                        direction: team.rank < oldRank ? 'up' : 'down'
+                    });
+                }
+            });
+        });
+        
+        // アニメーション実行
+        if (rankChanges.length > 0) {
+            animateRankChanges(rankChanges);
+        }
+    }
+
+    // 順位移動アニメーション
+    function animateRankChanges(changes) {
+        changes.forEach(change => {
+            const card = document.querySelector(
+                `#team-${change.discipline}-event [data-team-card="${change.teamName}"]`
+            );
+            
+            if (card) {
+                // 移動距離を計算
+                const moveDistance = (change.oldRank - change.newRank) * card.offsetHeight;
+                
+                // CSSトランジションを設定
+                card.style.transition = 'transform 0.8s ease-in-out';
+                card.style.transform = `translateY(${moveDistance}px)`;
+                
+                // アニメーション完了後
+                setTimeout(() => {
+                    card.style.transition = '';
+                    card.style.transform = '';
+                    
+                    // 点滅開始（順位が上がった場合のみ）
+                    if (change.direction === 'up') {
+                        card.classList.add('rank-improved');
+                        setTimeout(() => {
+                            card.classList.remove('rank-improved');
+                        }, 5000);
+                    }
+                }, 800);
+            }
+        });
+    }
+
 </script>
 </body>
 

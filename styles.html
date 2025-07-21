@@ -994,3 +994,27 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
 .team-total-container {
     font-family: 'Arial', sans-serif !important;
 }
+
+/* 順位上昇時の強調アニメーション（PC版のみ） */
+@media (min-width: 1024px) {
+    .rank-improved {
+        animation: rankUpGlow 1s ease-out;
+    }
+    
+    @keyframes rankUpGlow {
+        0% {
+            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+        }
+        50% {
+            box-shadow: 0 0 20px 10px rgba(76, 175, 80, 0.4);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+        }
+    }
+}
+
+/* 既存の点滅アニメーションも維持 */
+.updnew {
+    animation: blinkFast 1.5s infinite;
+}
