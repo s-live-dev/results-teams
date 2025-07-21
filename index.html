@@ -15,15 +15,15 @@
     rel="stylesheet">
 
   <style>
-    <?!=include('styles');
+    <? !=include('styles');
     ?>
-    
+
     /* 初期状態ではコンテンツを非表示 */
     body {
       opacity: 0;
       transition: opacity 0.3s ease-in-out;
     }
-    
+
     body.loaded {
       opacity: 1;
     }
@@ -95,7 +95,7 @@
     </div>
   </footer>
 
-<script>
+  <script>
     // スコアカラーリング関数 - インラインスタイルで確実に適用
     function getScoreStyle(score) {
         switch (score) {
@@ -869,7 +869,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // グローバルインスタンス
 const audioManager = new ExternalAudioManager();
 
-</script>
+  </script>
 </body>
 
 </html>
