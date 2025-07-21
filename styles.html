@@ -547,11 +547,15 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
         border-top-right-radius: 2vw; /* 右上の角を丸くする */
     }
     
+    /* スマホ版では個人順位を非表示 */
+    .player-pos {
+        display: none !important;
+    }
 
     /* スマホ版射撃競技特有要素 */
     .section-title { font-size: 6vw !important; margin-bottom: 4vw !important; }
-.team-rank { font-size: 7vw !important; line-height: 7vw !important; }
-.team-name { font-size: 6vw !important; line-height: 7vw !important; }
+    .team-rank { font-size: 7vw !important; line-height: 7vw !important; }
+    .team-name { font-size: 6vw !important; line-height: 7vw !important; }
     .team-total { font-size: 7vw !important; }
     .player-name { font-size: 5vw !important; }
     .player-score { font-size: 5vw !important; }
@@ -591,26 +595,26 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
     
     h1 { font-size: 6vw !important; }
 
-/* スマホ版: 新しい合計点表示のスタイル */
-.team-total-container {
-    font-weight: 700;
-}
-.team-total-breakdown {
-    font-size: 4vw; /* 内訳のフォントサイズ */
-}
-.total-separator {
-    color: rgba(255,255,255,0.8);
-    margin: 0 1vw;
-}
-.team-total-overall {
-    font-size: 7vw; /* 総合計のフォントサイズ */
-    margin-left: 1vw;
-}
-.accordion-chevron {
-    font-size: 4vw; /* 矢印のサイズ調整 */
-    margin-left: 2vw;
-}
-}
+    /* スマホ版: 新しい合計点表示のスタイル */
+    .team-total-container {
+        font-weight: 700;
+    }
+    .team-total-breakdown {
+        font-size: 4vw; /* 内訳のフォントサイズ */
+    }
+    .total-separator {
+        color: rgba(255,255,255,0.8);
+        margin: 0 1vw;
+    }
+    .team-total-overall {
+        font-size: 7vw; /* 総合計のフォントサイズ */
+        margin-left: 1vw;
+    }
+    .accordion-chevron {
+        font-size: 4vw; /* 矢印のサイズ調整 */
+        margin-left: 2vw;
+    }
+} /* === スマホ版メディアクエリ終了 === */
 
 /* === レスポンシブ：PC版（viewport単位） === */
 @media (min-width: 1024px) {
@@ -839,117 +843,124 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
     #team-overall table colgroup col:nth-child(6) { width: 8% !important; }
     #team-overall table colgroup col:nth-child(7) { width: 15% !important; }
 
-/* === 総合成績セクション内の選手テーブル専用スタイル (PC) === */
+    /* === 総合成績セクション内の選手テーブル専用スタイル (PC) === */
 
-/* 「トラップ:」「スキート:」ヘッダーのフォントと下余白を調整 */
-#team-overall .accordion-content h4 {
-    font-size: 1.5vh !important;
-    margin-bottom: 0.4vh !important;
-}
+    /* 「トラップ:」「スキート:」ヘッダーのフォントと下余白を調整 */
+    #team-overall .accordion-content h4 {
+        font-size: 1.5vh !important;
+        margin-bottom: 0.4vh !important;
+    }
 
-/* 選手テーブルのセルの上下余白を詰めて行の高さを縮小 */
-#team-overall .accordion-content td {
-    padding-top: 0.05vh !important;
-    padding-bottom: 0.05vh !important;
-    line-height: 0.9 !important;
-    vertical-align: middle !important;
-}
+    /* 選手テーブルのセルの上下余白を詰めて行の高さを縮小 */
+    #team-overall .accordion-content td {
+        padding-top: 0.05vh !important;
+        padding-bottom: 0.05vh !important;
+        line-height: 0.9 !important;
+        vertical-align: middle !important;
+    }
 
-/* 選手テーブルのフォントサイズを調整 */
-#team-overall .accordion-content .lg-text-xs {
-    font-size: 1.3vh !important;
-}
+    /* 選手テーブルのフォントサイズを調整 */
+    #team-overall .accordion-content .lg-text-xs {
+        font-size: 1.3vh !important;
+    }
 
-/* PC版: 総合成績チーム名ヘッダーの余白を削除し、垂直中央揃えを維持 */
-#team-overall .bg-card > button {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-    min-height: 3.5vh; /* 中央揃えを機能させるための最小高さを確保 */
-}
-/* PC版: 総合成績セクション、ヘッダー下の見出し(h4)が持つ不要な上マージンを削除 */
-#team-overall .accordion-content h4 { margin-top: 0 !important; }
-/* PC版: 総合成績セクションの種目バッジを非表示 */
-#team-overall .team-score-badge {
-    display: none;
-}
-/* PC版でスマホ用の合計点を非表示にする */
-.lg-hidden {
-    display: none !important;
-}
+    /* PC版: 総合成績チーム名ヘッダーの余白を削除し、垂直中央揃えを維持 */
+    #team-overall .bg-card > button {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+        min-height: 3.5vh; /* 中央揃えを機能させるための最小高さを確保 */
+    }
+    /* PC版: 総合成績セクション、ヘッダー下の見出し(h4)が持つ不要な上マージンを削除 */
+    #team-overall .accordion-content h4 { margin-top: 0 !important; }
+    /* PC版: 総合成績セクションの種目バッジを非表示 */
+    #team-overall .team-score-badge {
+        display: none;
+    }
+    /* PC版でスマホ用の合計点を非表示にする */
+    .lg-hidden {
+        display: none !important;
+    }
 
-/* PC版: 総合成績の小計ヘッダーは不要なため非表示に */
-#team-overall .accordion-content h4 {
-    display: none !important;
-}
-/* PC版で要素をflex表示にするユーティリティ */
-.lg-flex {
-    display: flex !important;
-}
-/* PC版: 新しい合計点表示のスタイル */
-.team-total-container {
-    font-weight: 700;
-}
-.team-total-breakdown {
-    font-size: 2.0vh;
-}
-.total-separator {
-    color: rgba(255,255,255,0.8);
-    margin: 0 0.5vh;
-}
-.team-total-overall {
-    font-size: 2.6vh;
-    margin-left: 0.8vh;
-}
-/* PC版：3カラムのカードの高さを統一するスタイル */
-#team-trap, #team-skeet, #team-overall {
-    display: flex !important;
-    flex-direction: column !important;
-}
+    /* PC版: 総合成績の小計ヘッダーは不要なため非表示に */
+    #team-overall .accordion-content h4 {
+        display: none !important;
+    }
+    /* PC版で要素をflex表示にするユーティリティ */
+    .lg-flex {
+        display: flex !important;
+    }
+    /* PC版: 新しい合計点表示のスタイル */
+    .team-total-container {
+        font-weight: 700;
+    }
+    .team-total-breakdown {
+        font-size: 2.0vh;
+    }
+    .total-separator {
+        color: rgba(255,255,255,0.8);
+        margin: 0 0.5vh;
+    }
+    .team-total-overall {
+        font-size: 2.6vh;
+        margin-left: 0.8vh;
+    }
+    /* PC版：3カラムのカードの高さを統一するスタイル */
+    #team-trap, #team-skeet, #team-overall {
+        display: flex !important;
+        flex-direction: column !important;
+    }
 
-#team-trap-event, #team-skeet-event, #team-overall-results {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-}
+    #team-trap-event, #team-skeet-event, #team-overall-results {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
 
-#team-trap-event > .bg-card,
-#team-skeet-event > .bg-card,
-#team-overall-results > .bg-card {
-    flex-grow: 1;
-}
-/* PC版: 入れ子にしたdivが原因のレイアウト崩れを防止 */
-.accordion-content .px-6 {
-    min-width: 100%;
-}
-/* PC版: トラップ・スキート種目の合計点を右揃えにする */
-#team-trap-event .team-total,
-#team-skeet-event .team-total {
-    margin-left: auto; /* 合計点を右に寄せる */
-}
+    #team-trap-event > .bg-card,
+    #team-skeet-event > .bg-card,
+    #team-overall-results > .bg-card {
+        flex-grow: 1;
+    }
+    /* PC版: 入れ子にしたdivが原因のレイアウト崩れを防止 */
+    .accordion-content .px-6 {
+        min-width: 100%;
+    }
+    /* PC版: トラップ・スキート種目の合計点を右揃えにする */
+    #team-trap-event .team-total,
+    #team-skeet-event .team-total {
+        margin-left: auto; /* 合計点を右に寄せる */
+    }
 
-/* PC版: トラップ・スキート種目の選手別合計点を右揃えにする */
-#team-trap-event td:last-child,
-#team-skeet-event td:last-child {
-    text-align: right !important;
-}
-/*
-  PC版: テーブルコンテナにvw単位で幅を指定し、中央に配置する
-  - これにより、テーブルは常に安定した幅を基準に列幅を計算でき、間延びを防ぐ
-*/
-#team-trap-event .overflow-x-auto,
-#team-skeet-event .overflow-x-auto {
-    margin-left: auto;
-    margin-right: auto;
-}
+    /* PC版: トラップ・スキート種目の選手別合計点を右揃えにする */
+    #team-trap-event td:last-child,
+    #team-skeet-event td:last-child {
+        text-align: right !important;
+    }
+    /*
+      PC版: テーブルコンテナにvw単位で幅を指定し、中央に配置する
+      - これにより、テーブルは常に安定した幅を基準に列幅を計算でき、間延びを防ぐ
+    */
+    #team-trap-event .overflow-x-auto,
+    #team-skeet-event .overflow-x-auto {
+        margin-left: auto;
+        margin-right: auto;
+    }
 
-/* PC版: 合計点の右揃えと、文字切れ防止のパディングを維持 */
-#team-trap-event td:last-child,
-#team-skeet-event td:last-child {
-    text-align: right !important;
-    padding-right: 0.0vw !important;
-}
+    /* PC版: 合計点の右揃えと、文字切れ防止のパディングを維持 */
+    #team-trap-event td:last-child,
+    #team-skeet-event td:last-child {
+        text-align: right !important;
+        padding-right: 0.0vw !important;
+    }
 
-}
+    /* PC版では個人順位を表示 */
+    .player-pos {
+        display: inline !important;
+        color: rgba(255, 255, 255, 0.7) !important;
+        font-size: 1.2vh !important;
+    }
+
+} /* === PC版メディアクエリ終了 ===*/
 
 
 /* === チームアイコンのスタイル === */

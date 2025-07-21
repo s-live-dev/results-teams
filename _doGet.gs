@@ -179,10 +179,15 @@ function parsePlayersData(sheet, discipline) {
 
   data.forEach(row => {
     if (!row[5] || !row[6]) return; // 氏名(F列)と所属(G列)が空ならスキップ
+
+    // W列(index:22)がRPOの選手は除外
+    if (row[22] === "RPO") return;
+
     players.push({
       discipline: discipline,
       team: row[6], // G列: 所属
       name: row[5], // F列: 氏名
+      pos: Number(row[2]) || 999, // C列: 個人順位（Pos）
       r1: Number(row[7]) || 0,
       r2: Number(row[8]) || 0,
       r3: Number(row[9]) || 0,
@@ -211,27 +216,32 @@ function calculateTeamResults(players) {
 
   for (const teamName in teams) {
     const teamPlayers = teams[teamName];
-    teamPlayers.trap.sort((a, b) => b.total - a.total);
-    teamPlayers.skeet.sort((a, b) => b.total - a.total);
 
+    // 個人順位（pos）で昇順ソート（小さい数字が上位）
+    teamPlayers.trap.sort((a, b) => a.pos - b.pos);
+    teamPlayers.skeet.sort((a, b) => a.pos - b.pos);
+
+    // トラップ種目別団体（上位3名）
     const eventTrapPlayers = teamPlayers.trap.slice(0, 3);
     if (eventTrapPlayers.length > 0) {
       eventTrap.push({
         name: teamName,
         total: eventTrapPlayers.reduce((sum, p) => sum + p.total, 0),
-        players: eventTrapPlayers.map((p, i) => ({ ...p, rank: i + 1 }))
+        players: eventTrapPlayers.map((p, i) => ({ ...p, rank: i + 1, pos: p.pos }))
       });
     }
 
+    // スキート種目別団体（上位3名）
     const eventSkeetPlayers = teamPlayers.skeet.slice(0, 3);
     if (eventSkeetPlayers.length > 0) {
       eventSkeet.push({
         name: teamName,
         total: eventSkeetPlayers.reduce((sum, p) => sum + p.total, 0),
-        players: eventSkeetPlayers.map((p, i) => ({ ...p, rank: i + 1 }))
+        players: eventSkeetPlayers.map((p, i) => ({ ...p, rank: i + 1, pos: p.pos }))
       });
     }
 
+    // 総合団体（トラップ上位5名、スキート上位3名）
     const overallTrapPlayers = teamPlayers.trap.slice(0, 5);
     const overallSkeetPlayers = teamPlayers.skeet.slice(0, 3);
 
@@ -247,6 +257,7 @@ function calculateTeamResults(players) {
           name: p.name,
           total: p.total,
           rank: i + 1,
+          pos: p.pos,
           r1: p.r1,
           r2: p.r2,
           r3: p.r3,
@@ -256,6 +267,7 @@ function calculateTeamResults(players) {
           name: p.name,
           total: p.total,
           rank: i + 1,
+          pos: p.pos,
           r1: p.r1,
           r2: p.r2,
           r3: p.r3,
@@ -265,9 +277,35 @@ function calculateTeamResults(players) {
     }
   }
 
-  eventTrap.sort((a, b) => b.total - a.total).forEach((t, i) => t.rank = i + 1);
-  eventSkeet.sort((a, b) => b.total - a.total).forEach((t, i) => t.rank = i + 1);
-  overall.sort((a, b) => b.overallTotal - a.overallTotal).forEach((t, i) => t.rank = i + 1);
+  // トラップ種目団体の同点同順位制
+  eventTrap.sort((a, b) => b.total - a.total);
+  let currentRank = 1;
+  for (let i = 0; i < eventTrap.length; i++) {
+    if (i > 0 && eventTrap[i].total !== eventTrap[i - 1].total) {
+      currentRank = i + 1;
+    }
+    eventTrap[i].rank = currentRank;
+  }
+
+  // スキート種目団体の同点同順位制
+  eventSkeet.sort((a, b) => b.total - a.total);
+  currentRank = 1;
+  for (let i = 0; i < eventSkeet.length; i++) {
+    if (i > 0 && eventSkeet[i].total !== eventSkeet[i - 1].total) {
+      currentRank = i + 1;
+    }
+    eventSkeet[i].rank = currentRank;
+  }
+
+  // 総合団体の同点同順位制
+  overall.sort((a, b) => b.overallTotal - a.overallTotal);
+  currentRank = 1;
+  for (let i = 0; i < overall.length; i++) {
+    if (i > 0 && overall[i].overallTotal !== overall[i - 1].overallTotal) {
+      currentRank = i + 1;
+    }
+    overall[i].rank = currentRank;
+  }
 
   return { eventTrap, eventSkeet, overall };
 }
