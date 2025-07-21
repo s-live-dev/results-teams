@@ -264,7 +264,7 @@
                                         </colgroup>
                                         <tbody class="divide-y">
                                             ${team.trapPlayers.map(p => `
-                                                <tr style="color: #F3F4F6 !important;">
+                                                <tr data-team="${team.name}" data-player="${p.name}" style="color: #F3F4F6 !important;">
                                                     <td class="py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.rank}</td>
                                                     <td class="py-0-5 lg-py-0 pl-0 player-name lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.name}<span class="player-pos"> (${p.pos})</span></td>
                                                     <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r1)}">${p.r1}</td>
@@ -292,7 +292,7 @@
                                         </colgroup>
                                         <tbody class="divide-y">
                                             ${team.skeetPlayers.map(p => `
-                                                <tr style="color: #F3F4F6 !important;">
+                                                <tr data-team="${team.name}" data-player="${p.name}" style="color: #F3F4F6 !important;">
                                                     <td class="py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.rank}</td>
                                                     <td class="py-0-5 lg-py-0 pl-0 player-name lg-text-xs lg-leading-tight" style="color: #F3F4F6 !important;">${p.name}<span class="player-pos"> (${p.pos})</span></td>
                                                     <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r1)}">${p.r1}</td>
@@ -300,7 +300,7 @@
                                                     <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r3)}">${p.r3}</td>
                                                     <td class="text-right py-0-5 lg-py-0 player-score lg-text-xs lg-leading-tight" style="${getScoreStyle(p.r4)}">${p.r4}</td>
                                                     <td class="text-right lg-text-center py-0-5 lg-py-0 pr-0 font-bold player-score lg-text-xs lg-leading-tight">
-                                                        <span class="score-value" style="${getTotalScoreStyle(p.total, '#c855e3')}">${p.total}</span>
+                                                        <span class="score-value" style="${getTotalScoreStyle(p.total, '#eebf35')}">${p.total}</span>
                                                     </td>
                                                 </tr>
                                             `).join('')}
@@ -448,7 +448,7 @@ function detectAndHighlightChanges(newData) {
     });
 }
 
-// 選手の合計値セルのみを点滅させる
+// 選手の行全体を点滅させる
 function highlightPlayer(teamName, playerName) {
     setTimeout(() => {
         const selector = `tr[data-team="${teamName}"][data-player="${playerName}"]`;
@@ -457,39 +457,14 @@ function highlightPlayer(teamName, playerName) {
         console.log(`点滅対象検索: ${selector}, 見つかった行数: ${rows.length}`); // デバッグ用
         
         rows.forEach(row => {
-            // 合計値のセル（最後のtd）のみに点滅クラスを追加
-            const totalCell = row.querySelector('td:last-child');
-            if (totalCell && totalCell.classList.contains('player-score')) {
-                totalCell.classList.add('updnew');
-                console.log(`点滅クラス追加: ${teamName} - ${playerName}`); // デバッグ用
-                
-                // 5分後に点滅クラスを削除
-                setTimeout(() => {
-                    totalCell.classList.remove('updnew');
-                }, fiveMinutes);
-            }
-        });
-    }, 500);
-}
-// highlightPlayer関数
-function highlightPlayer(teamName, playerName) {
-    setTimeout(() => {
-        const selector = `tr[data-team="${teamName}"][data-player="${playerName}"]`;
-        const rows = document.querySelectorAll(selector);
-        
-        rows.forEach(row => {
-            // 合計値のspan要素を取得
-            const totalCell = row.querySelector('td:last-child');
-            const scoreSpan = totalCell?.querySelector('.score-value');
-            if (scoreSpan) {
-                scoreSpan.classList.add('updnew');
-                console.log(`点滅クラス追加: ${teamName} - ${playerName}`);
-                
-                // 5分後に点滅クラスを削除
-                setTimeout(() => {
-                    scoreSpan.classList.remove('updnew');
-                }, fiveMinutes);
-            }
+            // 行全体に点滅クラスを追加
+            row.classList.add('updnew');
+            console.log(`点滅クラス追加: ${teamName} - ${playerName}`); // デバッグ用
+            
+            // 5分後に点滅クラスを削除
+            setTimeout(() => {
+                row.classList.remove('updnew');
+            }, fiveMinutes);
         });
     }, 500);
 }
