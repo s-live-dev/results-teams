@@ -1,5 +1,6 @@
 // テスト用URL
 // https://script.google.com/a/macros/s-live.app/s/AKfycbw30nl9TJx5dt01rZaRlPDszm260hdevMhxZfkj0jCz/dev?s=1adOhszHoKkreKUFCa7b8z7p72ue-frsBOJkR7yRHwQg&qr=results/team/2024
+// Opus4 クリーンアップ実行済み
 
 /**
  * WebページとしてアクセスされたときにHTMLを返す
