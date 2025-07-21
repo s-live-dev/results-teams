@@ -996,23 +996,137 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
 }
 
 /* 順位上昇時の強調アニメーション（PC版のみ） */
-@media (min-width: 1024px) {
+<!-- @media (min-width: 1024px) {
     .rank-improved {
-        animation: rankUpGlow 1s ease-out;
+        animation: rankUpGlow 12s ease-out;
     }
     
     @keyframes rankUpGlow {
         0% {
-            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
         }
         50% {
-            box-shadow: 0 0 20px 10px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 0 20px 10px rgba(0, 0, 255, 0.6);
         }
         100% {
-            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            box-shadow: 0 0 0 0 rgba(255, 255 , 0, 0);
+        }
+    }
+} -->
+@media (min-width: 1024px) {
+    /* ランクアップ時に他のカードを暗くする */
+    .rank-changing #team-trap-event .bg-card:not(.rank-improved),
+    .rank-changing #team-skeet-event .bg-card:not(.rank-improved),
+    .rank-changing #team-overall-results .bg-card:not(.rank-improved) {
+        position: relative;
+        transition: all 0.5s ease-out;
+    }
+    
+    .rank-changing #team-trap-event .bg-card:not(.rank-improved)::after,
+    .rank-changing #team-skeet-event .bg-card:not(.rank-improved)::after,
+    .rank-changing #team-overall-results .bg-card:not(.rank-improved)::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.2);
+        pointer-events: none;
+        border-radius: inherit;
+        z-index: 1;
+    }
+    
+    /* ランクアップしたチーム */
+    .rank-improved {
+        position: relative;
+        animation: rainbowPulse 5s ease-out;
+        z-index: 10;
+    }
+    
+    /* SVG上矢印のオーバーレイ */
+    .rank-improved::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100px;
+        height: 100px;
+        transform: translate(-50%, -50%);
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cpath d='M50 20 L70 50 L60 50 L60 80 L40 80 L40 50 L30 50 Z' fill='rgba(255,255,255,0.2)' stroke='rgba(255,255,255,0.3)' stroke-width='2'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        pointer-events: none;
+        animation: arrowPulse 5s ease-out;
+    }
+    
+    @keyframes rainbowPulse {
+        0% {
+            box-shadow: 
+                0 0 20px 5px rgba(255, 0, 0, 0.8),
+                0 0 40px 10px rgba(255, 0, 0, 0.5),
+                0 0 60px 15px rgba(255, 0, 0, 0.3);
+            transform: scale(1);
+        }
+        20% {
+            box-shadow: 
+                0 0 20px 5px rgba(255, 255, 0, 0.8),
+                0 0 40px 10px rgba(255, 255, 0, 0.5),
+                0 0 60px 15px rgba(255, 255, 0, 0.3);
+            transform: scale(1.02);
+        }
+        40% {
+            box-shadow: 
+                0 0 20px 5px rgba(0, 255, 0, 0.8),
+                0 0 40px 10px rgba(0, 255, 0, 0.5),
+                0 0 60px 15px rgba(0, 255, 0, 0.3);
+            transform: scale(1.05);
+        }
+        60% {
+            box-shadow: 
+                0 0 20px 5px rgba(0, 0, 255, 0.8),
+                0 0 40px 10px rgba(0, 0, 255, 0.5),
+                0 0 60px 15px rgba(0, 0, 255, 0.3);
+            transform: scale(1.02);
+        }
+        80% {
+            box-shadow: 
+                0 0 20px 5px rgba(0, 0, 255, 0.4),
+                0 0 40px 10px rgba(0, 0, 255, 0.25),
+                0 0 60px 15px rgba(0, 0, 255, 0.15);
+            transform: scale(1.01);
+        }
+        100% {
+            box-shadow: 
+                0 0 20px 5px rgba(0, 0, 255, 0),
+                0 0 40px 10px rgba(0, 0, 255, 0),
+                0 0 60px 15px rgba(0, 0, 255, 0);
+            transform: scale(1);
+        }
+    }
+    
+    /* 矢印のアニメーション */
+    @keyframes arrowPulse {
+        0%, 20% {
+            opacity: 0;
+            transform: translate(-50%, -30%) scale(0.5);
+        }
+        40% {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+        60% {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -70%) scale(0.8);
         }
     }
 }
+
 
 /* styles.htmlに追加 */
 .updnew {

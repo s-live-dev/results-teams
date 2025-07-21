@@ -228,9 +228,10 @@
             container.innerHTML = '<p class="text-gray-400 text-center p-4">データがありません。</p>';
             return;
         }
-        container.innerHTML = data.map(team => `
-            <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20">
-                <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
+            container.innerHTML = data.map(team => `
+                <div class="bg-card backdrop-blur-sm rounded-lg shadow-lg border border-white-20"
+                    data-team-card="${team.name}">
+                    <button onclick="toggleAccordion(this)" class="w-full flex justify-between items-center px-6 py-2 lg-py-1 text-left font-bold" style="color: #F3F4F6 !important;">
                     <div class="flex items-center justify-center">
                         <span class="team-rank w-8 text-left text-lg lg-text-base">${team.rank}</span>
                         <img src="${getTeamIconUrl(team.name)}" alt="${team.name} icon" class="team-icon-style">
@@ -388,6 +389,7 @@
     const spreadsheetId = '<?!= s ?>';
     const qrParam = '<?!= qr ?>';
     const fiveMinutes = 5 * 60 * 1000; // 5分
+    let previousData = null; // チーム順位変動監視
 
 // タイムスタンプベースの更新検知（完全版）
 function detectAndHighlightChanges(newData) {
@@ -448,20 +450,21 @@ function detectAndHighlightChanges(newData) {
     });
 }
 
-// 選手の行全体を点滅させる
+// highlightPlayer関数にも音声を追加（オプション）
 function highlightPlayer(teamName, playerName) {
     setTimeout(() => {
         const selector = `tr[data-team="${teamName}"][data-player="${playerName}"]`;
         const rows = document.querySelectorAll(selector);
         
-        console.log(`点滅対象検索: ${selector}, 見つかった行数: ${rows.length}`); // デバッグ用
+        if (rows.length > 0) {
+            // 選手更新音を再生（PC版のみ）
+            audioManager.play('playerUpdate');
+        }
         
         rows.forEach(row => {
-            // 行全体に点滅クラスを追加
             row.classList.add('updnew');
-            console.log(`点滅クラス追加: ${teamName} - ${playerName}`); // デバッグ用
+            console.log(`点滅クラス追加: ${teamName} - ${playerName}`);
             
-            // 5分後に点滅クラスを削除
             setTimeout(() => {
                 row.classList.remove('updnew');
             }, fiveMinutes);
@@ -469,7 +472,6 @@ function highlightPlayer(teamName, playerName) {
     }, 500);
 }
 
-// fetchData関数も修正（前回データの保存は不要に）
 function fetchData() {
     google.script.run
         .withSuccessHandler(data => {
@@ -494,6 +496,14 @@ function fetchData() {
                 // タイムスタンプベースの更新検知（毎回実行）
                 detectAndHighlightChanges(data);
                 
+                // 順位変動検知（2回目以降のデータ取得時）
+                if (previousData) {
+                    detectRankChanges(data, previousData);
+                }
+                
+                // 次回の比較用に現在のデータを保存（ディープコピー）
+                previousData = JSON.parse(JSON.stringify(data));
+                
                 // コンテンツの表示
                 document.body.classList.add('loaded');
             });
@@ -506,78 +516,216 @@ function fetchData() {
 }
 
 
-    // PC版での順位変動検知とアニメーション
-    function detectRankChanges(newData, oldData) {
-        if (window.innerWidth < 1024) return; // PC版のみ
-        
-        const rankChanges = [];
-        
-        ['trap', 'skeet'].forEach(discipline => {
-            const oldRankMap = new Map();
-            oldData.teamEvent[discipline].forEach(team => {
-                oldRankMap.set(team.name, team.rank);
-            });
-            
-            newData.teamEvent[discipline].forEach(team => {
-                const oldRank = oldRankMap.get(team.name);
-                if (oldRank && oldRank !== team.rank) {
-                    rankChanges.push({
-                        discipline,
-                        teamName: team.name,
-                        oldRank,
-                        newRank: team.rank,
-                        direction: team.rank < oldRank ? 'up' : 'down'
-                    });
-                }
-            });
+function detectRankChanges(newData, oldData) {
+    if (window.innerWidth < 1024) return; // PC版のみ
+    
+    const rankChanges = [];
+    
+    // トラップ・スキート種目別団体
+    ['trap', 'skeet'].forEach(discipline => {
+        const oldRankMap = new Map();
+        oldData.teamEvent[discipline].forEach(team => {
+            oldRankMap.set(team.name, team.rank);
         });
         
-        // アニメーション実行
-        if (rankChanges.length > 0) {
-            animateRankChanges(rankChanges);
-        }
-    }
-
-    // 順位移動アニメーション
-    function animateRankChanges(changes) {
-        changes.forEach(change => {
-            const card = document.querySelector(
-                `#team-${change.discipline}-event [data-team-card="${change.teamName}"]`
-            );
-            
-            if (card) {
-                // 移動距離を計算
-                const moveDistance = (change.oldRank - change.newRank) * card.offsetHeight;
-                
-                // CSSトランジションを設定
-                card.style.transition = 'transform 0.8s ease-in-out';
-                card.style.transform = `translateY(${moveDistance}px)`;
-                
-                // アニメーション完了後
-                setTimeout(() => {
-                    card.style.transition = '';
-                    card.style.transform = '';
-                    
-                    // 点滅開始（順位が上がった場合のみ）
-                    if (change.direction === 'up') {
-                        card.classList.add('rank-improved');
-                        setTimeout(() => {
-                            card.classList.remove('rank-improved');
-                        }, 5000);
-                    }
-                }, 800);
+        newData.teamEvent[discipline].forEach(team => {
+            const oldRank = oldRankMap.get(team.name);
+            if (oldRank && oldRank !== team.rank) {
+                rankChanges.push({
+                    discipline,
+                    teamName: team.name,
+                    oldRank,
+                    newRank: team.rank,
+                    direction: team.rank < oldRank ? 'up' : 'down'
+                });
             }
         });
+    });
+    
+    // 総合団体の順位変動を追加
+    const oldOverallMap = new Map();
+    oldData.teamOverall.forEach(team => {
+        oldOverallMap.set(team.name, team.rank);
+    });
+    
+    newData.teamOverall.forEach(team => {
+        const oldRank = oldOverallMap.get(team.name);
+        if (oldRank && oldRank !== team.rank) {
+            rankChanges.push({
+                discipline: 'overall', // 総合を示す識別子
+                teamName: team.name,
+                oldRank,
+                newRank: team.rank,
+                direction: team.rank < oldRank ? 'up' : 'down'
+            });
+        }
+    });
+    
+    // アニメーション実行
+    if (rankChanges.length > 0) {
+        animateRankChanges(rankChanges);
     }
+}
+
+// animateRankChanges関数に音声再生を追加
+function animateRankChanges(changes) {
+    // ランク変動中フラグを立てる
+    document.body.classList.add('rank-changing');
+    
+    changes.forEach(change => {
+        const selector = change.discipline === 'overall' 
+            ? `#team-overall-results [data-team-card="${change.teamName}"]`
+            : `#team-${change.discipline}-event [data-team-card="${change.teamName}"]`;
+            
+        const card = document.querySelector(selector);
+        
+        if (card) {
+            // 移動距離を計算
+            const moveDistance = (change.oldRank - change.newRank) * card.offsetHeight;
+            
+            // CSSトランジションを設定
+            card.style.transition = 'transform 0.8s ease-in-out';
+            card.style.transform = `translateY(${moveDistance}px)`;
+            
+            // アニメーション完了後
+            setTimeout(() => {
+                card.style.transition = '';
+                card.style.transform = '';
+                
+                // 点滅開始（順位が上がった場合のみ）
+                if (change.direction === 'up') {
+                    card.classList.add('rank-improved');
+                    
+                    // ランクアップ音を再生（PC版のみ）
+                    audioManager.play('rankUp');
+                    
+                    setTimeout(() => {
+                        card.classList.remove('rank-improved');
+                        if (document.querySelectorAll('.rank-improved').length === 0) {
+                            document.body.classList.remove('rank-changing');
+                        }
+                    }, 5000);
+                }
+            }, 800);
+        }
+    });
+    
+    // ランクダウンしたカードのみの場合もフラグを外す
+    setTimeout(() => {
+        if (document.querySelectorAll('.rank-improved').length === 0) {
+            document.body.classList.remove('rank-changing');
+        }
+    }, 1000);
+}
 
     // --- 初期化処理 ---
-    document.addEventListener('DOMContentLoaded', () => {
-        handleResize();
-        fetchData();
-        setInterval(fetchData, 30000); // 30秒ごとに更新
-    });
+// DOMContentLoaded時に音声初期化を準備
+document.addEventListener('DOMContentLoaded', () => {
+    // 最初のクリックで音声を初期化（ブラウザの自動再生ポリシー対策）
+    document.body.addEventListener('click', async function initializeAudio() {
+        if (window.innerWidth >= 1024) {
+            await audioManager.init();
+        }
+    }, { once: true });
+    
+    handleResize();
+    fetchData();
+    setInterval(fetchData, 30000);
+});
 
-    window.addEventListener('resize', handleResize);
+// ウィンドウリサイズ時の処理に追加
+window.addEventListener('resize', () => {
+    handleResize();
+    audioManager.handleResize();
+});
+
+// Google Driveの音声ファイルURL設定
+// ファイルは「リンクを知っている全員」に共有設定する必要があります
+const audioConfig = {
+    rankUp: {
+        // Google DriveのファイルIDを使用
+        fileId: '1IiMHevzXEsNGRmLF4YhlzGhevEYymKx0',
+        url: 'https://drive.google.com/uc?export=download&id=1IiMHevzXEsNGRmLF4YhlzGhevEYymKx0'
+    },
+    playerUpdate: {
+        fileId: '1aAYjHBSezYOwYyxMsCR7P_0sHrjJIt0j',
+        url: 'https://drive.google.com/uc?export=download&id=1aAYjHBSezYOwYyxMsCR7P_0sHrjJIt0j'
+    }
+};
+// PC版でのみ動作する音声管理クラス
+class DriveAudioManager {
+    constructor() {
+        this.sounds = {};
+        this.enabled = window.innerWidth >= 1024; // PC版のみ有効
+        this.volume = 0.3;
+        this.initialized = false;
+    }
+    
+    // 初期化（最初のユーザー操作時に呼び出す）
+    async init() {
+        if (!this.enabled || this.initialized) return;
+        
+        try {
+            // 各音声ファイルをプリロード
+            for (const [key, config] of Object.entries(audioConfig)) {
+                const audio = new Audio(config.url);
+                audio.volume = this.volume;
+                audio.preload = 'auto';
+                
+                // ロード完了を待つ
+                await new Promise((resolve, reject) => {
+                    audio.addEventListener('canplaythrough', resolve, { once: true });
+                    audio.addEventListener('error', reject, { once: true });
+                    audio.load();
+                });
+                
+                this.sounds[key] = audio;
+            }
+            
+            this.initialized = true;
+            console.log('音声ファイルの読み込み完了');
+        } catch (error) {
+            console.error('音声ファイルの読み込みエラー:', error);
+            this.enabled = false;
+        }
+    }
+    
+    // 音声再生
+    play(soundName) {
+        if (!this.enabled || !this.sounds[soundName]) return;
+        
+        try {
+            // 再生位置をリセット
+            this.sounds[soundName].currentTime = 0;
+            
+            // クローンを作成して同時再生を可能にする
+            const audioClone = this.sounds[soundName].cloneNode();
+            audioClone.volume = this.volume;
+            
+            audioClone.play().catch(error => {
+                console.log('音声再生エラー:', error);
+            });
+        } catch (error) {
+            console.error('音声再生エラー:', error);
+        }
+    }
+    
+    // 音量調整
+    setVolume(level) {
+        this.volume = Math.max(0, Math.min(1, level));
+        Object.values(this.sounds).forEach(audio => {
+            audio.volume = this.volume;
+        });
+    }
+    
+    // ウィンドウサイズ変更時の処理
+    handleResize() {
+        this.enabled = window.innerWidth >= 1024;
+    }
+}
+
+// グローバルインスタンス
+const audioManager = new DriveAudioManager();
 
 </script>
 </body>
