@@ -15,7 +15,7 @@
     rel="stylesheet">
 
   <style>
-    <? !=include('styles');
+    <?!=include('styles');
     ?>
 
     /* 初期状態ではコンテンツを非表示 */
@@ -122,20 +122,19 @@
         return `${baseUrl}${teamName}.png`; 
     }
 
-// 画像をプリロードする関数
-function preloadImages(urls) {
-    return Promise.all(urls.map(url => {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve(url);
-            img.onerror = () => {
-                // console.warn削除
-                resolve(url); // エラーでも処理を続行
-            };
-            img.src = url;
-        });
-    }));
-}
+    // 画像をプリロードする関数
+    function preloadImages(urls) {
+        return Promise.all(urls.map(url => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(url);
+                img.onerror = () => {
+                    resolve(url); // エラーでも処理を続行
+                };
+                img.src = url;
+            });
+        }));
+    }
 
     // すべての必要な画像URLを収集する関数
     function collectImageUrls(data) {
@@ -207,7 +206,6 @@ function preloadImages(urls) {
                                           <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r2)}">${p.r2}</td>
                                           <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r3)}">${p.r3}</td>
                                           <td class="text-right py-0-5 player-score" style="${getScoreStyle(p.r4)}">${p.r4}</td>
-                                          // renderTeamEvent関数を修正
                                           <td class="text-right lg-text-center py-0-5 pr-0 font-bold player-score">
                                               <span class="score-value" style="${getTotalScoreStyle(p.total, color)}">${p.total}</span>
                                           </td>
@@ -386,143 +384,162 @@ function preloadImages(urls) {
 
     // --- データ取得と画面描画 ---
     // グローバルスコープで変数を定義
-    const spreadsheetId = '<?!= s ?>';
-    const qrParam = '<?!= qr ?>';
+    const spreadsheetId = '<?!=s?>';
+    const qrParam = '<?!=qr?>';
     const fiveMinutes = 5 * 60 * 1000; // 5分
     let previousData = null; // チーム順位変動監視
 
-// タイムスタンプベースの更新検知（完全版）
-function detectAndHighlightChanges(newData) {
-    const now = new Date();
-    
-    // 各種目での更新時刻チェック（トラップ・スキート種目別）
-    ['trap', 'skeet'].forEach(discipline => {
-        newData.teamEvent[discipline].forEach(team => {
-            team.players.forEach(player => {
+    // タイムスタンプベースの更新検知（完全版）
+    function detectAndHighlightChanges(newData) {
+        const now = new Date();
+        
+        // 各種目での更新時刻チェック（トラップ・スキート種目別）
+        ['trap', 'skeet'].forEach(discipline => {
+            newData.teamEvent[discipline].forEach(team => {
+                team.players.forEach(player => {
+                    if (player.updateTime) {
+                        // 文字列からDate型に変換（日本時間として解釈）
+                        const updateTime = new Date(player.updateTime);
+                        const diff = now - updateTime;
+                        
+                        if (diff >= 0 && diff <= fiveMinutes) {
+                            // 5分以内の更新なら点滅対象
+                            highlightPlayer(team.name, player.name);
+                        }
+                    }
+                });
+            });
+        });
+        
+        // 総合成績での更新時刻チェック
+        newData.teamOverall.forEach(team => {
+            // トラップ選手（上位5名）
+            team.trapPlayers.forEach(player => {
                 if (player.updateTime) {
-                    // 文字列からDate型に変換（日本時間として解釈）
                     const updateTime = new Date(player.updateTime);
                     const diff = now - updateTime;
                     
                     if (diff >= 0 && diff <= fiveMinutes) {
-                        // 5分以内の更新なら点滅対象
+                        highlightPlayer(team.name, player.name);
+                    }
+                }
+            });
+            
+            // スキート選手（上位3名）
+            team.skeetPlayers.forEach(player => {
+                if (player.updateTime) {
+                    const updateTime = new Date(player.updateTime);
+                    const diff = now - updateTime;
+                    
+                    if (diff >= 0 && diff <= fiveMinutes) {
                         highlightPlayer(team.name, player.name);
                     }
                 }
             });
         });
-    });
-    
-    // 総合成績での更新時刻チェック
-    newData.teamOverall.forEach(team => {
-        // トラップ選手（上位5名）
-        team.trapPlayers.forEach(player => {
-            if (player.updateTime) {
-                const updateTime = new Date(player.updateTime);
-                const diff = now - updateTime;
-                
-                if (diff >= 0 && diff <= fiveMinutes) {
-                    highlightPlayer(team.name, player.name);
-                }
-            }
-        });
-        
-        // スキート選手（上位3名）
-        team.skeetPlayers.forEach(player => {
-            if (player.updateTime) {
-                const updateTime = new Date(player.updateTime);
-                const diff = now - updateTime;
-                
-                if (diff >= 0 && diff <= fiveMinutes) {
-                    highlightPlayer(team.name, player.name);
-                }
-            }
-        });
-    });
-}
+    }
 
-// highlightPlayer関数にも音声を追加（オプション）
-function highlightPlayer(teamName, playerName) {
-    setTimeout(() => {
-        const selector = `tr[data-team="${teamName}"][data-player="${playerName}"]`;
-        const rows = document.querySelectorAll(selector);
-        
-        if (rows.length > 0) {
-            // 選手更新音を再生（PC版のみ）
-            audioManager.play('playerUpdate');
-        }
-        
-        rows.forEach(row => {
-            row.classList.add('updnew');
+    // highlightPlayer関数にも音声を追加（オプション）
+    function highlightPlayer(teamName, playerName) {
+        setTimeout(() => {
+            const selector = `tr[data-team="${teamName}"][data-player="${playerName}"]`;
+            const rows = document.querySelectorAll(selector);
             
-            setTimeout(() => {
-                row.classList.remove('updnew');
-            }, fiveMinutes);
-        });
-    }, 500);
-}
-
-function fetchData() {
-    google.script.run
-        .withSuccessHandler(data => {
-            if (data.error) {
-                console.error("Error from GAS: ", data.error);
-                document.body.innerHTML = `<p class="text-red-500 p-4">データ取得エラー: ${data.error}</p>`;
-                return;
+            if (rows.length > 0) {
+                // 選手更新音を再生（PC版のみ）
+                audioManager.play('playerUpdate');
             }
             
-            // 画像URLを収集
-            const imageUrls = collectImageUrls(data);
-            
-            // すべての画像をプリロードしてから表示
-            preloadImages(imageUrls).then(() => {
-                renderHeaderAndFooter(data.eventInfo);
-                renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#c855e3');
-                renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#eebf35');
-                renderTeamOverall(data.teamOverall, 'team-overall-results');
+            rows.forEach(row => {
+                row.classList.add('updnew');
                 
-                handleResize();
-                
-                // タイムスタンプベースの更新検知（毎回実行）
-                detectAndHighlightChanges(data);
-                
-                // 順位変動検知（2回目以降のデータ取得時）
-                if (previousData) {
-                    detectRankChanges(data, previousData);
-                }
-                
-                // 次回の比較用に現在のデータを保存（ディープコピー）
-                previousData = JSON.parse(JSON.stringify(data));
-                
-                // コンテンツの表示
-                document.body.classList.add('loaded');
+                setTimeout(() => {
+                    row.classList.remove('updnew');
+                }, fiveMinutes);
             });
-        })
-        .withFailureHandler(error => {
-            console.error("Error fetching data: ", error);
-            document.body.innerHTML = '<p class="text-red-500 p-4">データ取得エラー</p>';
-        })
-        .getTeamData(spreadsheetId, qrParam);
-}
+        }, 500);
+    }
 
+    function fetchData() {
+        google.script.run
+            .withSuccessHandler(data => {
+                if (data.error) {
+                    console.error("Error from GAS: ", data.error);
+                    document.body.innerHTML = `<p class="text-red-500 p-4">データ取得エラー: ${data.error}</p>`;
+                    return;
+                }
+                
+                // 画像URLを収集
+                const imageUrls = collectImageUrls(data);
+                
+                // すべての画像をプリロードしてから表示
+                preloadImages(imageUrls).then(() => {
+                    renderHeaderAndFooter(data.eventInfo);
+                    renderTeamEvent(data.teamEvent.trap, 'team-trap-event', '#c855e3');
+                    renderTeamEvent(data.teamEvent.skeet, 'team-skeet-event', '#eebf35');
+                    renderTeamOverall(data.teamOverall, 'team-overall-results');
+                    
+                    handleResize();
+                    
+                    // タイムスタンプベースの更新検知（毎回実行）
+                    detectAndHighlightChanges(data);
+                    
+                    // 順位変動検知（2回目以降のデータ取得時）
+                    if (previousData) {
+                        detectRankChanges(data, previousData);
+                    }
+                    
+                    // 次回の比較用に現在のデータを保存（ディープコピー）
+                    previousData = JSON.parse(JSON.stringify(data));
+                    
+                    // コンテンツの表示
+                    document.body.classList.add('loaded');
+                });
+            })
+            .withFailureHandler(error => {
+                console.error("Error fetching data: ", error);
+                document.body.innerHTML = '<p class="text-red-500 p-4">データ取得エラー</p>';
+            })
+            .getTeamData(spreadsheetId, qrParam);
+    }
 
-function detectRankChanges(newData, oldData) {
-    if (window.innerWidth < 1024) return; // PC版のみ
-    
-    const rankChanges = [];
-    
-    // トラップ・スキート種目別団体
-    ['trap', 'skeet'].forEach(discipline => {
-        const oldRankMap = new Map();
-        oldData.teamEvent[discipline].forEach(team => {
-            oldRankMap.set(team.name, team.rank);
+    function detectRankChanges(newData, oldData) {
+        if (window.innerWidth < 1024) return; // PC版のみ
+        
+        const rankChanges = [];
+        
+        // トラップ・スキート種目別団体
+        ['trap', 'skeet'].forEach(discipline => {
+            const oldRankMap = new Map();
+            oldData.teamEvent[discipline].forEach(team => {
+                oldRankMap.set(team.name, team.rank);
+            });
+            
+            newData.teamEvent[discipline].forEach(team => {
+                const oldRank = oldRankMap.get(team.name);
+                if (oldRank && oldRank !== team.rank) {
+                    rankChanges.push({
+                        discipline,
+                        teamName: team.name,
+                        oldRank,
+                        newRank: team.rank,
+                        direction: team.rank < oldRank ? 'up' : 'down'
+                    });
+                }
+            });
         });
         
-        newData.teamEvent[discipline].forEach(team => {
-            const oldRank = oldRankMap.get(team.name);
+        // 総合団体の順位変動を追加
+        const oldOverallMap = new Map();
+        oldData.teamOverall.forEach(team => {
+            oldOverallMap.set(team.name, team.rank);
+        });
+        
+        newData.teamOverall.forEach(team => {
+            const oldRank = oldOverallMap.get(team.name);
             if (oldRank && oldRank !== team.rank) {
                 rankChanges.push({
-                    discipline,
+                    discipline: 'overall', // 総合を示す識別子
                     teamName: team.name,
                     oldRank,
                     newRank: team.rank,
@@ -530,344 +547,145 @@ function detectRankChanges(newData, oldData) {
                 });
             }
         });
-    });
-    
-    // 総合団体の順位変動を追加
-    const oldOverallMap = new Map();
-    oldData.teamOverall.forEach(team => {
-        oldOverallMap.set(team.name, team.rank);
-    });
-    
-    newData.teamOverall.forEach(team => {
-        const oldRank = oldOverallMap.get(team.name);
-        if (oldRank && oldRank !== team.rank) {
-            rankChanges.push({
-                discipline: 'overall', // 総合を示す識別子
-                teamName: team.name,
-                oldRank,
-                newRank: team.rank,
-                direction: team.rank < oldRank ? 'up' : 'down'
-            });
-        }
-    });
-    
-    // アニメーション実行
-    if (rankChanges.length > 0) {
-        animateRankChanges(rankChanges);
-    }
-}
-
-// animateRankChanges関数に音声再生を追加
-function animateRankChanges(changes) {
-    // ランク変動中フラグを立てる
-    document.body.classList.add('rank-changing');
-    
-    changes.forEach(change => {
-        const selector = change.discipline === 'overall' 
-            ? `#team-overall-results [data-team-card="${change.teamName}"]`
-            : `#team-${change.discipline}-event [data-team-card="${change.teamName}"]`;
-            
-        const card = document.querySelector(selector);
         
-        if (card) {
-            // 移動距離を計算
-            const moveDistance = (change.oldRank - change.newRank) * card.offsetHeight;
-            
-            // CSSトランジションを設定
-            card.style.transition = 'transform 0.8s ease-in-out';
-            card.style.transform = `translateY(${moveDistance}px)`;
-            
-            // アニメーション完了後
-            setTimeout(() => {
-                card.style.transition = '';
-                card.style.transform = '';
-                
-                // 点滅開始（順位が上がった場合のみ）
-                if (change.direction === 'up') {
-                    card.classList.add('rank-improved');
-                    
-                    // ランクアップ音を再生（PC版のみ）
-                    audioManager.play('rankUp');
-                    
-                    setTimeout(() => {
-                        card.classList.remove('rank-improved');
-                        if (document.querySelectorAll('.rank-improved').length === 0) {
-                            document.body.classList.remove('rank-changing');
-                        }
-                    }, 5000);
-                }
-            }, 800);
+        // アニメーション実行
+        if (rankChanges.length > 0) {
+            animateRankChanges(rankChanges);
         }
-    });
-    
-    // ランクダウンしたカードのみの場合もフラグを外す
-    setTimeout(() => {
-        if (document.querySelectorAll('.rank-improved').length === 0) {
-            document.body.classList.remove('rank-changing');
-        }
-    }, 1000);
-}
-
-    // --- 初期化処理 ---
-// DOMContentLoaded時の処理を修正
-document.addEventListener('DOMContentLoaded', () => {
-    // 最初のユーザー操作で音声を初期化（ブラウザの自動再生ポリシー対策）
-    document.body.addEventListener('click', async function initializeAudio() {
-        if (window.innerWidth >= 1024 && !audioManager.initialized) {
-            await audioManager.init();
-        }
-    }, { once: true });
-    
-    handleResize();
-    fetchData();
-    setInterval(fetchData, 30000);
-});
-
-// ウィンドウリサイズ時の処理に追加
-window.addEventListener('resize', () => {
-    handleResize();
-    audioManager.handleResize();
-});
-
-// 外部サーバーの音声ファイルURL設定
-const audioConfig = {
-    rankUp: {
-        url: 'https://s-live.org/sounds/punch-it_team_rankup.mp3'
-    },
-    playerUpdate: {
-        url: 'https://s-live.org/sounds/punch-it_athlete_rankup.mp3'
     }
-};
 
-// PC版でのみ動作する音声管理クラス
-class DriveAudioManager {
-    constructor() {
-        this.sounds = {};
-        this.enabled = window.innerWidth >= 1024; // PC版のみ有効
-        this.volume = 0.3;
-        this.initialized = false;
-    }
-    
-    // 初期化（最初のユーザー操作時に呼び出す）
-    async init() {
-        if (!this.enabled || this.initialized) return;
+    // animateRankChanges関数に音声再生を追加
+    function animateRankChanges(changes) {
+        // ランク変動中フラグを立てる
+        document.body.classList.add('rank-changing');
         
-        try {
-            // 各音声ファイルをプリロード
-            for (const [key, config] of Object.entries(audioConfig)) {
-                const audio = new Audio(config.url);
-                audio.volume = this.volume;
-                audio.preload = 'auto';
+        changes.forEach(change => {
+            const selector = change.discipline === 'overall' 
+                ? `#team-overall-results [data-team-card="${change.teamName}"]`
+                : `#team-${change.discipline}-event [data-team-card="${change.teamName}"]`;
                 
-                // ロード完了を待つ
-                await new Promise((resolve, reject) => {
-                    audio.addEventListener('canplaythrough', resolve, { once: true });
-                    audio.addEventListener('error', reject, { once: true });
-                    audio.load();
-                });
+            const card = document.querySelector(selector);
+            
+            if (card) {
+                // 移動距離を計算
+                const moveDistance = (change.oldRank - change.newRank) * card.offsetHeight;
                 
-                this.sounds[key] = audio;
+                // CSSトランジションを設定
+                card.style.transition = 'transform 0.8s ease-in-out';
+                card.style.transform = `translateY(${moveDistance}px)`;
+                
+                // アニメーション完了後
+                setTimeout(() => {
+                    card.style.transition = '';
+                    card.style.transform = '';
+                    
+                    // 点滅開始（順位が上がった場合のみ）
+                    if (change.direction === 'up') {
+                        card.classList.add('rank-improved');
+                        
+                        // ランクアップ音を再生（PC版のみ）
+                        audioManager.play('rankUp');
+                        
+                        setTimeout(() => {
+                            card.classList.remove('rank-improved');
+                            if (document.querySelectorAll('.rank-improved').length === 0) {
+                                document.body.classList.remove('rank-changing');
+                            }
+                        }, 5000);
+                    }
+                }, 800);
             }
-            
-            this.initialized = true;
-            console.log('[音声] 初期化完了'); // 最小限のログのみ
-        } catch (error) {
-            console.error('[音声] 初期化エラー:', error);
-            this.enabled = false;
-        }
-    }
-    
-    // 音声再生
-    play(soundName) {
-        if (!this.enabled || !this.sounds[soundName]) return;
-        
-        try {
-            // 再生位置をリセット
-            this.sounds[soundName].currentTime = 0;
-            
-            // クローンを作成して同時再生を可能にする
-            const audioClone = this.sounds[soundName].cloneNode();
-            audioClone.volume = this.volume;
-            
-            audioClone.play().catch(error => {
-                console.error('[音声] 再生エラー:', error);
-            });
-        } catch (error) {
-            console.error('[音声] 再生エラー:', error);
-        }
-    }
-    
-    // 音量調整
-    setVolume(level) {
-        this.volume = Math.max(0, Math.min(1, level));
-        Object.values(this.sounds).forEach(audio => {
-            audio.volume = this.volume;
         });
-    }
-    
-    // ウィンドウサイズ変更時の処理
-    handleResize() {
-        this.enabled = window.innerWidth >= 1024;
-    }
-}
-// Google Workspace対応の音声管理クラス
-class GASAudioManager {
-    constructor() {
-        this.sounds = {};
-        this.enabled = window.innerWidth >= 1024;
-        this.volume = 0.3;
-        this.initialized = false;
-    }
-    
-    async init() {
-        if (!this.enabled || this.initialized) return;
         
-        try {
-            // GASから音声メタデータを取得
-            const metadata = await new Promise((resolve, reject) => {
-                google.script.run
-                    .withSuccessHandler(resolve)
-                    .withFailureHandler(reject)
-                    .getAudioMetadata();
-            });
-            
-            // 各音声ファイルを読み込み
-            for (const [key, fileId] of Object.entries(metadata)) {
-                const audioData = await new Promise((resolve, reject) => {
-                    google.script.run
-                        .withSuccessHandler(resolve)
-                        .withFailureHandler(reject)
-                        .getAudioFile(fileId);
-                });
-                
-                if (audioData.success) {
-                    const audio = new Audio(`data:${audioData.mimeType};base64,${audioData.data}`);
-                    audio.volume = this.volume;
-                    this.sounds[key] = audio;
-                }
+        // ランクダウンしたカードのみの場合もフラグを外す
+        setTimeout(() => {
+            if (document.querySelectorAll('.rank-improved').length === 0) {
+                document.body.classList.remove('rank-changing');
             }
+        }, 1000);
+    }
+
+    // === 音声管理システム ===
+    // 外部サーバーの音声をGASプロキシ経由で取得するクラス
+    class ProxyAudioManager {
+        constructor() {
+            this.sounds = {};
+            this.enabled = window.innerWidth >= 1024;
+            this.volume = 0.3;
+            this.initialized = false;
+        }
+        
+        async init() {
+            if (!this.enabled || this.initialized) return;
             
-            this.initialized = true;
-            console.log('[音声] 初期化完了');
-        } catch (error) {
-            console.error('[音声] 初期化エラー:', error);
-            this.enabled = false;
-        }
-    }
-    
-    play(soundName) {
-        if (!this.enabled || !this.sounds[soundName]) return;
-        
-        try {
-            const audio = this.sounds[soundName].cloneNode();
-            audio.volume = this.volume;
-            audio.play().catch(() => {});
-        } catch (error) {
-            console.error('[音声] 再生エラー:', error);
-        }
-    }
-    
-    handleResize() {
-        this.enabled = window.innerWidth >= 1024;
-    }
-}
-// シンプルな音声管理クラス
-class ExternalAudioManager {
-    constructor() {
-        this.sounds = {};
-        this.enabled = window.innerWidth >= 1024; // PC版のみ有効
-        this.volume = 0.3;
-        this.initialized = false;
-    }
-    
-    async init() {
-        if (!this.enabled || this.initialized) return;
-        
-        try {
-            // 各音声ファイルをプリロード
-            for (const [key, config] of Object.entries(audioConfig)) {
-                try {
-                    const audio = new Audio(config.url);
-                    audio.volume = this.volume;
-                    audio.preload = 'auto';
-                    
-                    // ロード完了を待つ
-                    await new Promise((resolve, reject) => {
-                        audio.addEventListener('canplaythrough', () => {
-                            console.log(`[音声] ${key} 読み込み成功`);
-                            resolve();
-                        }, { once: true });
-                        
-                        audio.addEventListener('error', (e) => {
-                            console.error(`[音声] ${key} 読み込みエラー:`, e);
-                            resolve(); // エラーでも処理を継続
-                        }, { once: true });
-                        
-                        audio.load();
+            try {
+                // 音声ファイルをGAS経由で取得
+                const soundNames = ['rankUp', 'playerUpdate'];
+                
+                for (const soundName of soundNames) {
+                    const audioData = await new Promise((resolve, reject) => {
+                        google.script.run
+                            .withSuccessHandler(resolve)
+                            .withFailureHandler(reject)
+                            .getExternalSound(soundName);
                     });
                     
-                    this.sounds[key] = audio;
-                } catch (e) {
-                    console.error(`[音声] ${key} 初期化エラー:`, e);
-                }
-            }
-            
-            this.initialized = true;
-            console.log('[音声] 初期化完了');
-        } catch (error) {
-            console.error('[音声] 初期化エラー:', error);
-            this.enabled = false;
-        }
-    }
-    
-    play(soundName) {
-        if (!this.enabled || !this.sounds[soundName]) return;
-        
-        try {
-            // 音声を再生
-            const audio = this.sounds[soundName];
-            audio.currentTime = 0;
-            
-            const playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    console.log(`[音声] ${soundName} 再生開始`);
-                }).catch(error => {
-                    // 自動再生ポリシーによるエラーは無視
-                    if (error.name !== 'NotAllowedError') {
-                        console.error(`[音声] ${soundName} 再生エラー:`, error);
+                    if (audioData.success) {
+                        const audio = new Audio(`data:${audioData.mimeType};base64,${audioData.data}`);
+                        audio.volume = this.volume;
+                        audio.preload = 'auto';
+                        this.sounds[soundName] = audio;
                     }
-                });
+                }
+                
+                this.initialized = true;
+                console.log('[音声] 初期化完了');
+            } catch (error) {
+                console.error('[音声] 初期化エラー:', error);
+                this.enabled = false;
             }
-        } catch (error) {
-            console.error('[音声] 再生エラー:', error);
+        }
+        
+        play(soundName) {
+            if (!this.enabled || !this.sounds[soundName]) return;
+            
+            try {
+                const audio = this.sounds[soundName].cloneNode();
+                audio.volume = this.volume;
+                audio.play().catch(() => {});
+            } catch (error) {
+                console.error('[音声] 再生エラー:', error);
+            }
+        }
+        
+        handleResize() {
+            this.enabled = window.innerWidth >= 1024;
         }
     }
-    
-    handleResize() {
-        this.enabled = window.innerWidth >= 1024;
-    }
-}
 
-// グローバルインスタンス
-const audioManager = new ExternalAudioManager();
+    // グローバルインスタンス
+    const audioManager = new ProxyAudioManager();
 
-// DOMContentLoaded時の処理
-document.addEventListener('DOMContentLoaded', () => {
-    // 最初のユーザー操作で音声を初期化（ブラウザの自動再生ポリシー対策）
-    document.body.addEventListener('click', async function initializeAudio() {
-        if (window.innerWidth >= 1024 && !audioManager.initialized) {
-            console.log('[音声] ユーザー操作を検知、初期化開始');
-            await audioManager.init();
-        }
-    }, { once: true });
-    
-    handleResize();
-    fetchData();
-    setInterval(fetchData, 30000);
-});
-// グローバルインスタンス
-const audioManager = new ExternalAudioManager();
+    // --- 初期化処理 ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // 最初のユーザー操作で音声を初期化（ブラウザの自動再生ポリシー対策）
+        document.body.addEventListener('click', async function initializeAudio() {
+            if (window.innerWidth >= 1024 && !audioManager.initialized) {
+                console.log('[音声] ユーザー操作を検知、初期化開始');
+                await audioManager.init();
+            }
+        }, { once: true });
+        
+        handleResize();
+        fetchData();
+        setInterval(fetchData, 30000);
+    });
+
+    // ウィンドウリサイズ時の処理に追加
+    window.addEventListener('resize', () => {
+        handleResize();
+        audioManager.handleResize();
+    });
 
   </script>
 </body>

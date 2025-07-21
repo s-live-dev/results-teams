@@ -323,34 +323,36 @@ function calculateTeamResults(players) {
 }
 
 /**
- * Google Driveから音声ファイルを取得して配信
- * @param {string} fileId - Google DriveのファイルID
+ * 外部サーバーの音声ファイルをプロキシ経由で取得
+ * @param {string} soundName - 音声名（'rankUp' または 'playerUpdate'）
  */
-function getAudioFile(fileId) {
+function getExternalSound(soundName) {
+  const soundUrls = {
+    rankUp: 'https://s-live.org/sounds/punch-it_team_rankup.mp3',
+    playerUpdate: 'https://s-live.org/sounds/punch-it_athlete_rankup.mp3'
+  };
+  
   try {
-    const file = DriveApp.getFileById(fileId);
-    const blob = file.getBlob();
+    const url = soundUrls[soundName];
+    if (!url) {
+      return { success: false, error: 'Invalid sound name' };
+    }
+    
+    // 外部URLから音声データを取得
+    const response = UrlFetchApp.fetch(url);
+    const blob = response.getBlob();
     const base64 = Utilities.base64Encode(blob.getBytes());
+    
     return {
       success: true,
       mimeType: blob.getContentType(),
       data: base64
     };
   } catch (e) {
-    console.error('音声ファイル取得エラー:', e);
+    console.error('外部音声取得エラー:', e);
     return {
       success: false,
       error: e.toString()
     };
   }
-}
-
-/**
- * 音声ファイルのメタデータを返す
- */
-function getAudioMetadata() {
-  return {
-    rankUp: '1IiMHevzXEsNGRmLF4YhlzGhevEYymKx0',
-    playerUpdate: '1aAYjHBSezYOwYyxMsCR7P_0sHrjJIt0j'
-  };
 }
