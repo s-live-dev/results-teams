@@ -181,6 +181,12 @@ function parsePlayersData(sheet, discipline) {
   data.forEach(row => {
     if (!row[5] || !row[6]) return;
     if (row[22] === "RPO") return;
+    
+    // 順位の取得（修正：デフォルトを900に）
+    const pos = Number(row[2]) || 900;
+    
+    // 900以上（初期値・DNS）は除外
+    if (pos >= 900) return;
 
     // タイムスタンプの処理を改善
     let updateTimeString = null;
@@ -196,7 +202,7 @@ function parsePlayersData(sheet, discipline) {
       discipline: discipline,
       team: row[6],
       name: row[5],
-      pos: Number(row[2]) || 999,
+      pos: pos,
       r1: Number(row[7]) || 0,
       r2: Number(row[8]) || 0,
       r3: Number(row[9]) || 0,
@@ -233,6 +239,7 @@ function calculateTeamResults(players) {
 
     // トラップ種目別団体（上位3名）
     const eventTrapPlayers = teamPlayers.trap.slice(0, 3);
+    // 有効な選手が存在する場合のみ追加
     if (eventTrapPlayers.length > 0) {
       eventTrap.push({
         name: teamName,
@@ -243,6 +250,7 @@ function calculateTeamResults(players) {
 
     // スキート種目別団体（上位3名）
     const eventSkeetPlayers = teamPlayers.skeet.slice(0, 3);
+    // 有効な選手が存在する場合のみ追加
     if (eventSkeetPlayers.length > 0) {
       eventSkeet.push({
         name: teamName,
@@ -256,6 +264,7 @@ function calculateTeamResults(players) {
     const overallSkeetPlayers = teamPlayers.skeet.slice(0, 3);
 
     // 総合団体のマッピング部分を修正
+    // どちらかの種目に有効な選手がいる場合のみ追加
     if (overallTrapPlayers.length > 0 || overallSkeetPlayers.length > 0) {
       const trapTotal = overallTrapPlayers.reduce((sum, p) => sum + p.total, 0);
       const skeetTotal = overallSkeetPlayers.reduce((sum, p) => sum + p.total, 0);

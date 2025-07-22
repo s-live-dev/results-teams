@@ -172,7 +172,7 @@
     function renderTeamEvent(data, targetId, color) {
       const container = document.getElementById(targetId);
       if (!data || data.length === 0) {
-          container.innerHTML = '<p class="text-gray-400 text-center p-4">データがありません。</p>';
+          container.innerHTML = '<p class="text-gray-400 text-center p-4">競技開始をお待ちください</p>';
           return;
       }
 
@@ -223,7 +223,7 @@
     function renderTeamOverall(data, targetId) {
         const container = document.getElementById(targetId);
         if (!data || data.length === 0) {
-            container.innerHTML = '<p class="text-gray-400 text-center p-4">データがありません。</p>';
+            container.innerHTML = '<p class="text-gray-400 text-center p-4">競技開始をお待ちください</p>';
             return;
         }
             container.innerHTML = data.map(team => `
