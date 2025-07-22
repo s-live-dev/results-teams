@@ -1125,20 +1125,21 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
             transform: translate(-50%, -70%) scale(0.8);
         }
     }
+    .status-icon {
+        display: inline-block;
+        font-size: 2.0vh;
+        vertical-align: middle;
+        transform: translateY(-0.3vh); /* 種目バッジと同じ垂直位置調整 */
+        line-height: 1; /* 行高さを最小化して垂直位置を安定させる */
+    }
+    
+    .status-icon i {
+        display: inline-block; /* 明示的にinline-blockを指定 */
+        vertical-align: middle;
+        line-height: inherit;
+    }
 }
 
-
-/* styles.htmlに追加 */
 .updnew {
     animation: blinkScale 1.5s infinite !important;
 }
-@keyframes blinkScale {
-    0%,
-    100% {
-      opacity: 1;
-    }
-
-    50% {
-      opacity: 0.3;
-    }
-  }

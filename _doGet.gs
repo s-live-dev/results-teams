@@ -147,6 +147,17 @@ function getEventInfoFromSheet(s, qrParam) {
       '&format=png&margin=10&size=150x150';
   }
 
+  // 状況アイコンを生成する関数
+  function getStatusIcon(status) {
+    switch (status) {
+      case '競技前': return '<i class="fa-regular fa-circle-pause"></i>';
+      case '競技中': return '<i class="fa-regular fa-circle-play"></i>';
+      case '競技終了': return '<i class="fa-regular fa-circle-check"></i>';
+      case '1日目終了': return '<i class="fa-regular fa-circle-pause"></i>';
+      default: return '';
+    }
+  }
+
   // オリジナルの形式でデータを構築
   return {
     name: row[1], // 大会名
@@ -164,7 +175,8 @@ function getEventInfoFromSheet(s, qrParam) {
     status: {
       trap: row[3] || "---", // 状況
       skeet: row[3] || "---"  // 団体戦では同じ状況を想定
-    }
+    },
+    statusIcon: getStatusIcon(row[3]) // 状況アイコンを追加
   };
 }
 

@@ -56,23 +56,29 @@
     <main class="pb-2 lg-pb-0 lg-h-full">
       <div class="lg-grid lg-grid-cols-3 lg-gap-2 lg-h-full">
 
+        <!-- トラップ種目団体セクション -->
         <div id="team-trap" class="tab-content lg-block lg-h-full lg-overflow-y-auto">
           <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #c855e3;text-align: center;">
             <img src="https://s-live.org/wp-content/plugins/s-live/resource/TRAP.png" class="event-badge-img event-badge-trap inline">トラップ種目 団体
+            <span id="trap-status-icon" class="status-icon ml-2"></span>
           </h2>
           <div id="team-trap-event" class="space-y-1"></div>
         </div>
 
+        <!-- スキート種目団体セクション -->
         <div id="team-skeet" class="tab-content hidden lg-block lg-h-full lg-overflow-y-auto">
           <h2 class="section-title desktop-only text-lg font-bold mb-1" style="color: #eebf35;text-align: center;">
             <img src="https://s-live.org/wp-content/plugins/s-live/resource/SKEET.png" class="event-badge-img event-badge-skeet inline">スキート種目 団体
+            <span id="skeet-status-icon" class="status-icon ml-2"></span>
           </h2>
           <div id="team-skeet-event" class="space-y-1"></div>
         </div>
 
+        <!-- 総合成績団体セクション -->
         <div id="team-overall" class="tab-content hidden lg-block lg-h-full lg-overflow-y-auto">
           <h2 class="section-title desktop-only text-lg font-bold mb-1 text-green-400" style="text-align: center;">
             <img src="https://s-live.org/wp-content/plugins/s-live/resource/TEAM.png" class="event-badge-img event-badge-team inline">総合成績 団体
+            <span id="overall-status-icon" class="status-icon ml-2"></span>
           </h2>
           <div id="team-overall-results" class="space-y-1"></div>
         </div>
@@ -331,6 +337,17 @@
         if (eventWeather) eventWeather.innerHTML = info.weather;
         const qrCode = document.getElementById('qr-code');
         if (qrCode) qrCode.src = info.qrCodeUrl;
+        
+        // PC版のみ：状況アイコンを表示
+        if (window.innerWidth >= 1024 && info.statusIcon) {
+            const trapIcon = document.getElementById('trap-status-icon');
+            const skeetIcon = document.getElementById('skeet-status-icon');
+            const overallIcon = document.getElementById('overall-status-icon');
+            
+            if (trapIcon) trapIcon.innerHTML = info.statusIcon;
+            if (skeetIcon) skeetIcon.innerHTML = info.statusIcon;
+            if (overallIcon) overallIcon.innerHTML = info.statusIcon;
+        }
     }
 
     // --- イベントハンドラ ---
