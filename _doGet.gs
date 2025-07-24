@@ -193,10 +193,10 @@ function parsePlayersData(sheet, discipline) {
   data.forEach(row => {
     if (!row[5] || !row[6]) return;
     if (row[22] === "RPO") return;
-    
+
     // 順位の取得（修正：デフォルトを900に）
     const pos = Number(row[2]) || 900;
-    
+
     // 900以上（初期値・DNS）は除外
     if (pos >= 900) return;
 
@@ -256,7 +256,15 @@ function calculateTeamResults(players) {
       eventTrap.push({
         name: teamName,
         total: eventTrapPlayers.reduce((sum, p) => sum + p.total, 0),
-        players: eventTrapPlayers.map((p, i) => ({ ...p, rank: i + 1, pos: p.pos }))
+        players: eventTrapPlayers.map((p, i) => {
+          let rank = 1;
+          for (let j = 0; j < i; j++) {
+            if (eventTrapPlayers[j].total !== p.total) {
+              rank = j + 2;
+            }
+          }
+          return { ...p, rank: rank, pos: p.pos };
+        })
       });
     }
 
@@ -267,7 +275,15 @@ function calculateTeamResults(players) {
       eventSkeet.push({
         name: teamName,
         total: eventSkeetPlayers.reduce((sum, p) => sum + p.total, 0),
-        players: eventSkeetPlayers.map((p, i) => ({ ...p, rank: i + 1, pos: p.pos }))
+        players: eventSkeetPlayers.map((p, i) => {
+          let rank = 1;
+          for (let j = 0; j < i; j++) {
+            if (eventSkeetPlayers[j].total !== p.total) {
+              rank = j + 2;
+            }
+          }
+          return { ...p, rank: rank, pos: p.pos };
+        })
       });
     }
 
@@ -285,28 +301,44 @@ function calculateTeamResults(players) {
         trapTotal: trapTotal,
         skeetTotal: skeetTotal,
         overallTotal: trapTotal + skeetTotal,
-        trapPlayers: overallTrapPlayers.map((p, i) => ({
-          name: p.name,
-          total: p.total,
-          rank: i + 1,
-          pos: p.pos,
-          r1: p.r1,
-          r2: p.r2,
-          r3: p.r3,
-          r4: p.r4,
-          updateTime: p.updateTime // タイムスタンプを追加
-        })),
-        skeetPlayers: overallSkeetPlayers.map((p, i) => ({
-          name: p.name,
-          total: p.total,
-          rank: i + 1,
-          pos: p.pos,
-          r1: p.r1,
-          r2: p.r2,
-          r3: p.r3,
-          r4: p.r4,
-          updateTime: p.updateTime // タイムスタンプを追加
-        }))
+        trapPlayers: overallTrapPlayers.map((p, i) => {
+          let rank = 1;
+          for (let j = 0; j < i; j++) {
+            if (overallTrapPlayers[j].total !== p.total) {
+              rank = j + 2;
+            }
+          }
+          return {
+            name: p.name,
+            total: p.total,
+            rank: rank,
+            pos: p.pos,
+            r1: p.r1,
+            r2: p.r2,
+            r3: p.r3,
+            r4: p.r4,
+            updateTime: p.updateTime
+          };
+        }),
+        skeetPlayers: overallSkeetPlayers.map((p, i) => {
+          let rank = 1;
+          for (let j = 0; j < i; j++) {
+            if (overallSkeetPlayers[j].total !== p.total) {
+              rank = j + 2;
+            }
+          }
+          return {
+            name: p.name,
+            total: p.total,
+            rank: rank,
+            pos: p.pos,
+            r1: p.r1,
+            r2: p.r2,
+            r3: p.r3,
+            r4: p.r4,
+            updateTime: p.updateTime
+          };
+        })
       });
     }
   }
@@ -353,18 +385,18 @@ function getExternalSound(soundName) {
     rankUp: 'https://s-live.org/sounds/punch-it_team_rankup.mp3',
     playerUpdate: 'https://s-live.org/sounds/punch-it_athlete_rankup.mp3'
   };
-  
+
   try {
     const url = soundUrls[soundName];
     if (!url) {
       return { success: false, error: 'Invalid sound name' };
     }
-    
+
     // 外部URLから音声データを取得
     const response = UrlFetchApp.fetch(url);
     const blob = response.getBlob();
     const base64 = Utilities.base64Encode(blob.getBytes());
-    
+
     return {
       success: true,
       mimeType: blob.getContentType(),
