@@ -410,6 +410,10 @@
     function detectAndHighlightChanges(newData) {
         const now = new Date();
         
+        // 順位変動アニメーションが実行中の場合は遅延させる
+        const isRankChanging = document.body.classList.contains('rank-changing');
+        const delay = isRankChanging ? 1500 : 500; // 順位変動中は1.5秒待つ
+        
         // 各種目での更新時刻チェック（トラップ・スキート種目別）
         ['trap', 'skeet'].forEach(discipline => {
             newData.teamEvent[discipline].forEach(team => {
@@ -420,8 +424,10 @@
                         const diff = now - updateTime;
                         
                         if (diff >= 0 && diff <= fiveMinutes) {
-                            // 5分以内の更新なら点滅対象
-                            highlightPlayer(team.name, player.name);
+                            // タイミングを調整して点滅を開始
+                            setTimeout(() => {
+                                highlightPlayer(team.name, player.name);
+                            }, delay);
                         }
                     }
                 });
@@ -437,7 +443,9 @@
                     const diff = now - updateTime;
                     
                     if (diff >= 0 && diff <= fiveMinutes) {
-                        highlightPlayer(team.name, player.name);
+                        setTimeout(() => {
+                            highlightPlayer(team.name, player.name);
+                        }, delay);
                     }
                 }
             });
@@ -449,32 +457,35 @@
                     const diff = now - updateTime;
                     
                     if (diff >= 0 && diff <= fiveMinutes) {
-                        highlightPlayer(team.name, player.name);
+                        setTimeout(() => {
+                            highlightPlayer(team.name, player.name);
+                        }, delay);
                     }
                 }
             });
         });
     }
 
-    // highlightPlayer関数にも音声を追加（オプション）
     function highlightPlayer(teamName, playerName) {
-        setTimeout(() => {
-            const selector = `tr[data-team="${teamName}"][data-player="${playerName}"]`;
-            const rows = document.querySelectorAll(selector);
-            
-            if (rows.length > 0) {
-                // 選手更新音を再生（PC版のみ）
-                audioManager.play('playerUpdate');
-            }
+        const selector = `tr[data-team="${teamName}"][data-player="${playerName}"]`;
+        const rows = document.querySelectorAll(selector);
+        
+        if (rows.length > 0) {
+            // 選手更新音を再生（PC版のみ）
+            audioManager.play('playerUpdate');
             
             rows.forEach(row => {
+                // 既存のクラスを一旦削除してから再追加（アニメーションリセット）
+                row.classList.remove('updnew');
+                void row.offsetWidth; // リフローを強制
                 row.classList.add('updnew');
                 
+                // 点滅を5分後に停止
                 setTimeout(() => {
                     row.classList.remove('updnew');
                 }, fiveMinutes);
             });
-        }, 500);
+        }
     }
 
     function fetchData() {
