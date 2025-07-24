@@ -572,9 +572,22 @@
     }
 
     // animateRankChanges関数に音声再生を追加
+    // animateRankChanges関数を修正
     function animateRankChanges(changes) {
         // ランク変動中フラグを立てる
         document.body.classList.add('rank-changing');
+        
+        // 暗転用のクラスを追加
+        document.querySelectorAll('#team-trap-event .bg-card, #team-skeet-event .bg-card, #team-overall-results .bg-card').forEach(card => {
+            if (!changes.some(change => {
+                const selector = change.discipline === 'overall' 
+                    ? `#team-overall-results [data-team-card="${change.teamName}"]`
+                    : `#team-${change.discipline}-event [data-team-card="${change.teamName}"]`;
+                return card === document.querySelector(selector);
+            })) {
+                card.classList.add('darken-card');
+            }
+        });
         
         changes.forEach(change => {
             const selector = change.discipline === 'overall' 
@@ -605,10 +618,22 @@
                         
                         setTimeout(() => {
                             card.classList.remove('rank-improved');
+                            
+                            // すべてのランクアップアニメーションが終了したら
                             if (document.querySelectorAll('.rank-improved').length === 0) {
-                                document.body.classList.remove('rank-changing');
+                                // 暗転を解除（フェードアウトアニメーション付き）
+                                document.querySelectorAll('.darken-card').forEach(darkCard => {
+                                    darkCard.classList.add('lighten-card');
+                                    setTimeout(() => {
+                                        darkCard.classList.remove('darken-card', 'lighten-card');
+                                    }, 800); // フェードアウトアニメーション時間
+                                });
+                                
+                                setTimeout(() => {
+                                    document.body.classList.remove('rank-changing');
+                                }, 800);
                             }
-                        }, 5000);
+                        }, 10000);
                     }
                 }, 800);
             }
@@ -617,7 +642,16 @@
         // ランクダウンしたカードのみの場合もフラグを外す
         setTimeout(() => {
             if (document.querySelectorAll('.rank-improved').length === 0) {
-                document.body.classList.remove('rank-changing');
+                document.querySelectorAll('.darken-card').forEach(darkCard => {
+                    darkCard.classList.add('lighten-card');
+                    setTimeout(() => {
+                        darkCard.classList.remove('darken-card', 'lighten-card');
+                    }, 800);
+                });
+                
+                setTimeout(() => {
+                    document.body.classList.remove('rank-changing');
+                }, 800);
             }
         }, 1000);
     }
