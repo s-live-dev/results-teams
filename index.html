@@ -403,7 +403,7 @@
     // グローバルスコープで変数を定義
     const spreadsheetId = '<?!=s?>';
     const qrParam = '<?!=qr?>';
-    const fiveMinutes = 5 * 60 * 1000; // 5分
+    const waitingMinutes = 3 * 60 * 1000; // 点滅対象時間
     let previousData = null; // チーム順位変動監視
 
     // タイムスタンプベースの更新検知（完全版）
@@ -423,7 +423,7 @@
                         const updateTime = new Date(player.updateTime);
                         const diff = now - updateTime;
                         
-                        if (diff >= 0 && diff <= fiveMinutes) {
+                        if (diff >= 0 && diff <= waitingMinutes) {
                             // タイミングを調整して点滅を開始
                             setTimeout(() => {
                                 highlightPlayer(team.name, player.name);
@@ -442,7 +442,7 @@
                     const updateTime = new Date(player.updateTime);
                     const diff = now - updateTime;
                     
-                    if (diff >= 0 && diff <= fiveMinutes) {
+                    if (diff >= 0 && diff <= waitingMinutes) {
                         setTimeout(() => {
                             highlightPlayer(team.name, player.name);
                         }, delay);
@@ -456,7 +456,7 @@
                     const updateTime = new Date(player.updateTime);
                     const diff = now - updateTime;
                     
-                    if (diff >= 0 && diff <= fiveMinutes) {
+                    if (diff >= 0 && diff <= waitingMinutes) {
                         setTimeout(() => {
                             highlightPlayer(team.name, player.name);
                         }, delay);
@@ -480,10 +480,10 @@
                 void row.offsetWidth; // リフローを強制
                 row.classList.add('updnew');
                 
-                // 点滅を5分後に停止
+                // 点滅をx分後に停止
                 setTimeout(() => {
                     row.classList.remove('updnew');
-                }, fiveMinutes);
+                }, waitingMinutes);
             });
         }
     }

@@ -1229,47 +1229,20 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
         line-height: inherit;
     }
 }
-/* PC版のみ：暗転中でも点滅行は明るく表示 */
-@media (min-width: 1024px) {
-    .darken-card tr.updnew td {
-        position: relative;
-        background-color: rgba(255, 255, 0, 0.2) !important;
-        animation: highlightPulse 1.5s infinite !important;
-    }
-    
-    @keyframes highlightPulse {
-        0%, 100% {
-            box-shadow: inset 0 0 10px rgba(255, 255, 0, 0.3);
-        }
-        50% {
-            box-shadow: inset 0 0 20px rgba(255, 255, 0, 0.6);
-        }
-    }
-}
 
-/* 選手更新時の点滅アニメーション */
-@keyframes blinkScale {
+/* 選手更新時の点滅アニメーション - シンプルな明度変化のみ */
+@keyframes blinkBrightness {
     0%, 100% {
-        background-color: rgba(255, 255, 255, 0.1);
-        transform: scale(1);
-    }
-    25% {
-        background-color: rgba(255, 255, 0, 0.3);
-        transform: scale(1.02);
+        opacity: 0.3;
     }
     50% {
-        background-color: rgba(255, 255, 0, 0.5);
-        transform: scale(1.05);
-    }
-    75% {
-        background-color: rgba(255, 255, 0, 0.3);
-        transform: scale(1.02);
+        opacity: 1;
     }
 }
 
 /* 点滅する行のスタイル */
-.updnew {
-    animation: blinkScale 1.5s infinite !important;
+.updnew td {
+    animation: blinkBrightness 1.5s infinite !important;
     position: relative;
     z-index: 20; /* 暗転したカードより前面に表示 */
 }
@@ -1278,4 +1251,12 @@ tbody tr *:not([style*="color:"]):not(.hl23):not(.hl24):not(.hl25) {
 .darken-card tr.updnew {
     position: relative;
     z-index: 2; /* 暗転オーバーレイより前面 */
+}
+
+/* PC版のみ：暗転中でも点滅行は明るく表示 */
+@media (min-width: 1024px) {
+    .darken-card tr.updnew td {
+        position: relative;
+        animation: blinkBrightness 1.5s infinite !important;
+    }
 }

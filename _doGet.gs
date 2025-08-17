@@ -1,5 +1,5 @@
 // テスト用URL
-// https://script.google.com/a/macros/s-live.app/s/AKfycbw30nl9TJx5dt01rZaRlPDszm260hdevMhxZfkj0jCz/dev?s=1adOhszHoKkreKUFCa7b8z7p72ue-frsBOJkR7yRHwQg&qr=results/team/2024
+// https://script.google.com/a/macros/s-live.app/s/AKfycbw30nl9TJx5dt01rZaRlPDszm260hdevMhxZfkj0jCz/dev?s=1VjvZD1mQ9sR80VWh_izIAw5GeS9o7y3CBdySpM2MyiM&qr=team%2Fkanto
 // Opus4 クリーンアップ実行済み
 
 /**
@@ -383,7 +383,7 @@ function calculateTeamResults(players) {
 function getExternalSound(soundName) {
   const soundUrls = {
     rankUp: 'https://s-live.org/sounds/punch-it_team_rankup.mp3',
-    playerUpdate: 'https://s-live.org/sounds/punch-it_athlete_rankup.mp3'
+    playerUpdate: 'https://s-live.org/sounds/athlete_updated.mp3'
   };
 
   try {
